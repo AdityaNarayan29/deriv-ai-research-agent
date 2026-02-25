@@ -1,13 +1,13 @@
 """Streamlit UI for the Research Agent — live demo interface."""
 
 import os
-import time
 import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
 
 from agent.graph import build_research_graph, create_initial_state
+from agent.state import AgentState
 from config.settings import settings
 
 
@@ -32,7 +32,7 @@ with st.sidebar:
     st.markdown("""
     - **Agent**: LangGraph
     - **Model 1**: Groq (Llama 3.3 70B) — extraction
-    - **Model 2**: Gemini 2.5 Flash — risk analysis
+    - **Model 2**: Gemini 2.0 Flash — risk analysis
     - **Search**: Tavily API
     - **Graph**: NetworkX + pyvis
     - **Tracing**: LangSmith
@@ -79,17 +79,27 @@ if run_btn:
     initial_state = create_initial_state(target_name, target_context, max_iter)
 
     # Progress display
-    progress_container = st.container()
     progress_bar = st.progress(0, text="Starting investigation...")
 
-    # Placeholders for results
+    # Execution log
     log_expander = st.expander("📋 Execution Log", expanded=True)
     logs: list[str] = []
 
-    # Stream execution
-    final_state = None
+    # ------------------------------------------------------------------
+    # Stream execution and accumulate the full state from partial outputs.
+    # Each node yields its slice of the state; we merge them together
+    # exactly like LangGraph's internal reducers do, so we end up with
+    # the same final state that `graph.invoke()` would return — but
+    # without running the pipeline twice.
+    # ------------------------------------------------------------------
+    accumulated: dict = {}
+    # List-type state keys that should be extended (not overwritten)
+    _LIST_KEYS = {
+        "search_queries", "search_results", "completed_queries",
+        "entities", "facts", "risk_flags", "execution_log",
+    }
     node_count = 0
-    total_expected_nodes = 7  # Rough estimate for progress bar
+    total_expected_nodes = 7  # rough estimate for progress bar
 
     try:
         for step in graph.stream(initial_state):
@@ -101,28 +111,69 @@ if run_btn:
             progress = min(node_count / (total_expected_nodes * max_iter), 0.95)
             progress_bar.progress(progress, text=f"Running: {node_name}...")
 
-            # Collect logs
-            for log in node_output.get("execution_log", []):
-                logs.append(log)
-                with log_expander:
-                    st.text(log)
+            # Merge this node's output into accumulated state
+            for key, value in node_output.items():
+                if key in _LIST_KEYS and isinstance(value, list):
+                    # Extend lists (mimics the _merge_lists / _merge_strings reducers)
+                    existing = accumulated.get(key, [])
+                    # Deduplicate by id if items have one
+                    existing_ids = set()
+                    for item in existing:
+                        item_id = getattr(item, "id", None)
+                        if item_id is None and isinstance(item, dict):
+                            item_id = item.get("id")
+                        if item_id:
+                            existing_ids.add(item_id)
 
-            final_state = node_output
+                    for item in value:
+                        item_id = getattr(item, "id", None)
+                        if item_id is None and isinstance(item, dict):
+                            item_id = item.get("id")
+                        if item_id and item_id in existing_ids:
+                            continue
+                        # For plain strings (execution_log, completed_queries), dedup by value
+                        if isinstance(item, str) and item in existing:
+                            continue
+                        existing.append(item)
+
+                    accumulated[key] = existing
+                else:
+                    # Scalar values: overwrite (latest wins)
+                    accumulated[key] = value
+
+            # Show new log lines live
+            for log_line in node_output.get("execution_log", []):
+                if log_line not in logs:
+                    logs.append(log_line)
+                    with log_expander:
+                        st.text(log_line)
 
         progress_bar.progress(1.0, text="✅ Investigation complete!")
 
     except Exception as e:
-        st.error(f"Agent error: {e}")
-        st.stop()
+        progress_bar.progress(1.0, text="⚠️ Investigation finished with errors.")
+        st.warning(f"Agent encountered an error: {e}")
 
-    # --- Results: invoke for full state ---
+    # Merge initial state scalars that nodes may not have re-emitted
+    for key in ("target_name", "target_context"):
+        if key not in accumulated:
+            accumulated[key] = initial_state[key]
+
+    # --- Results ---
     st.divider()
     st.header("📊 Results")
 
-    try:
-        result = graph.invoke(initial_state)
-    except Exception:
-        result = {}  # Fallback if re-invoke fails
+    # Summary metrics row
+    facts = accumulated.get("facts", [])
+    entities = accumulated.get("entities", [])
+    risk_flags = accumulated.get("risk_flags", [])
+    iterations = accumulated.get("iteration", 0)
+
+    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+    col_m1.metric("Facts Extracted", len(facts))
+    col_m2.metric("Entities Discovered", len(entities))
+    col_m3.metric("Risk Flags", len(risk_flags))
+    col_m4.metric("Search Iterations", iterations)
 
     # Tabs for different result views
     tab_report, tab_graph, tab_facts, tab_risks, tab_entities = st.tabs([
@@ -130,11 +181,14 @@ if run_btn:
     ])
 
     with tab_report:
-        report = result.get("report", "No report generated.")
-        st.markdown(report)
+        report = accumulated.get("report", "")
+        if report:
+            st.markdown(report)
+        else:
+            st.info("No report generated. This may be due to API rate limits.")
 
     with tab_graph:
-        graph_html_path = result.get("graph_html", "")
+        graph_html_path = accumulated.get("graph_html", "")
         if graph_html_path and os.path.exists(graph_html_path):
             with open(graph_html_path, "r") as f:
                 html_content = f.read()
@@ -143,9 +197,7 @@ if run_btn:
             st.info("No identity graph generated.")
 
     with tab_facts:
-        facts = result.get("facts", [])
         if facts:
-            st.metric("Total Facts", len(facts))
             for f in facts:
                 confidence_color = "🟢" if f.confidence >= 0.7 else "🟡" if f.confidence >= 0.4 else "🔴"
                 st.markdown(
@@ -156,10 +208,8 @@ if run_btn:
             st.info("No facts extracted.")
 
     with tab_risks:
-        risks = result.get("risk_flags", [])
-        if risks:
-            st.metric("Total Risk Flags", len(risks))
-            sorted_risks = sorted(risks, key=lambda r: r.severity.value, reverse=True)
+        if risk_flags:
+            sorted_risks = sorted(risk_flags, key=lambda r: r.severity.value, reverse=True)
             for r in sorted_risks:
                 severity_icon = {1: "ℹ️", 2: "⚠️", 3: "🟠", 4: "🔴", 5: "🚨"}.get(r.severity.value, "⚠️")
                 st.markdown(
@@ -171,9 +221,7 @@ if run_btn:
             st.info("No risk flags identified.")
 
     with tab_entities:
-        entities = result.get("entities", [])
         if entities:
-            st.metric("Total Entities", len(entities))
             for e in entities:
                 type_icon = {
                     "person": "👤", "organization": "🏢",

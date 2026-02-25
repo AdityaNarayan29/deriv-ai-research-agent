@@ -1,8 +1,12 @@
-"""Node 2: Search Executor — runs Tavily searches with rate limiting."""
+"""Node 2: Search Executor — runs Tavily searches with rate limiting.
 
-import time
+Uses concurrent execution to parallelize search queries for speed,
+while still respecting API rate limits.
+"""
+
 import logging
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from tavily import TavilyClient
 
@@ -12,11 +16,21 @@ from agent.state import AgentState, SearchResult
 logger = logging.getLogger(__name__)
 
 
+def _run_single_search(client: TavilyClient, query: str) -> dict:
+    """Execute a single Tavily search. Runs inside a thread."""
+    response = client.search(
+        query=query,
+        search_depth="advanced",
+        max_results=5,
+    )
+    return {"query": query, "results": response.get("results", []), "error": None}
+
+
 def search_executor(state: AgentState) -> dict:
     """Execute pending search queries via Tavily API.
 
-    Processes queries that haven't been completed yet, with rate limiting
-    and deduplication of results by URL.
+    Processes queries that haven't been completed yet, running them
+    concurrently (up to 3 in parallel) for speed. Deduplicates results by URL.
     """
     client = TavilyClient(api_key=settings.tavily_api_key)
 
@@ -37,40 +51,39 @@ def search_executor(state: AgentState) -> dict:
     seen_urls = {r.url for r in state.get("search_results", [])}
     logs: list[str] = []
 
-    for sq in queries_to_run:
-        try:
-            logger.info(f"Searching: {sq.query}")
-            response = client.search(
-                query=sq.query,
-                search_depth="advanced",
-                max_results=5,
-            )
+    # Run searches concurrently (max 3 workers to stay within rate limits)
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        future_to_query = {
+            executor.submit(_run_single_search, client, sq.query): sq
+            for sq in queries_to_run
+        }
 
-            for result in response.get("results", []):
-                url = result.get("url", "")
-                if url in seen_urls:
-                    continue
-                seen_urls.add(url)
-                new_results.append(SearchResult(
-                    url=url,
-                    title=result.get("title", ""),
-                    content=result.get("content", ""),
-                    score=result.get("score", 0.0),
-                    query=sq.query,
-                ))
+        for future in as_completed(future_to_query):
+            sq = future_to_query[future]
+            try:
+                result = future.result()
+                for r in result["results"]:
+                    url = r.get("url", "")
+                    if url in seen_urls:
+                        continue
+                    seen_urls.add(url)
+                    new_results.append(SearchResult(
+                        url=url,
+                        title=r.get("title", ""),
+                        content=r.get("content", ""),
+                        score=r.get("score", 0.0),
+                        query=sq.query,
+                    ))
 
-            completed.append(sq.query)
-            logs.append(
-                f"[{datetime.now().isoformat()}] Search: '{sq.query}' → {len(response.get('results', []))} results"
-            )
+                completed.append(sq.query)
+                logs.append(
+                    f"[{datetime.now().isoformat()}] Search: '{sq.query}' → {len(result['results'])} results"
+                )
 
-            # Rate limiting
-            time.sleep(settings.search_rate_limit_seconds)
-
-        except Exception as e:
-            logger.error(f"Search failed for '{sq.query}': {e}")
-            completed.append(sq.query)  # Mark as completed to avoid infinite retries
-            logs.append(f"[{datetime.now().isoformat()}] Search FAILED: '{sq.query}' — {e}")
+            except Exception as e:
+                logger.error(f"Search failed for '{sq.query}': {e}")
+                completed.append(sq.query)
+                logs.append(f"[{datetime.now().isoformat()}] Search FAILED: '{sq.query}' — {e}")
 
     return {
         "search_results": new_results,

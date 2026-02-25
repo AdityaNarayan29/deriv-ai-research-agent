@@ -1,6 +1,6 @@
 """Node 5: Query Refiner — decides whether to continue searching and generates refined queries.
 
-Uses Groq/Llama for fast decision-making on search continuation.
+Uses Groq/Llama as primary, with Gemini fallback on rate limits.
 This is the control flow hub of the search loop — it examines what's been
 found so far and decides whether the investigation should go deeper.
 """
@@ -10,6 +10,7 @@ import logging
 from datetime import datetime
 
 from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
 
 from config.settings import settings
@@ -28,18 +29,30 @@ CATEGORY_MAP = {
 }
 
 
+def _get_llm_candidates():
+    """Yield (llm, label) pairs — primary Groq, then Gemini fallback."""
+    yield (
+        ChatGroq(model=settings.groq_model, api_key=settings.groq_api_key, temperature=0.2),
+        "groq",
+    )
+    if settings.google_api_key:
+        yield (
+            ChatGoogleGenerativeAI(
+                model=settings.gemini_model,
+                google_api_key=settings.google_api_key,
+                temperature=0.2,
+            ),
+            "gemini-fallback",
+        )
+
+
 def query_refiner(state: AgentState) -> dict:
     """Decide whether to continue the search loop or finalize.
 
     Examines uninvestigated entities, low-confidence facts, and risk flags
     to determine if further searching would add value.
+    Falls back to Gemini if Groq hits rate limits.
     """
-    llm = ChatGroq(
-        model=settings.groq_model,
-        api_key=settings.groq_api_key,
-        temperature=0.2,
-    )
-
     iteration = state.get("iteration", 0)
     max_iterations = state.get("max_iterations", settings.max_search_iterations)
 
@@ -83,50 +96,56 @@ def query_refiner(state: AgentState) -> dict:
         completed_queries="\n".join(state.get("completed_queries", [])) or "none",
     )
 
-    try:
-        response = llm.invoke([HumanMessage(content=prompt)])
-        content = response.content
+    # Try each LLM candidate until one succeeds
+    last_error = None
+    for llm, label in _get_llm_candidates():
+        try:
+            response = llm.invoke([HumanMessage(content=prompt)])
+            content = response.content
 
-        # Parse JSON
-        if "```json" in content:
-            content = content.split("```json")[1].split("```")[0]
-        elif "```" in content:
-            content = content.split("```")[1].split("```")[0]
+            # Parse JSON
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0]
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0]
 
-        data = json.loads(content.strip())
+            data = json.loads(content.strip())
 
-        should_continue = data.get("should_continue", False)
-        new_queries = []
+            should_continue = data.get("should_continue", False)
+            new_queries = []
 
-        if should_continue:
-            for q in data.get("new_queries", []):
-                category = CATEGORY_MAP.get(q.get("category", "professional"), FactCategory.PROFESSIONAL)
-                new_queries.append(SearchQuery(
-                    query=q["query"],
-                    category=category,
-                    rationale=q.get("rationale", ""),
-                ))
+            if should_continue:
+                for q in data.get("new_queries", []):
+                    category = CATEGORY_MAP.get(q.get("category", "professional"), FactCategory.PROFESSIONAL)
+                    new_queries.append(SearchQuery(
+                        query=q["query"],
+                        category=category,
+                        rationale=q.get("rationale", ""),
+                    ))
 
-        log_msg = (
-            f"[{datetime.now().isoformat()}] QueryRefiner: "
-            f"{'CONTINUE' if should_continue else 'STOP'} — "
-            f"{data.get('reasoning', 'no reasoning')} "
-            f"({len(new_queries)} new queries)"
-        )
-        logger.info(log_msg)
+            log_msg = (
+                f"[{datetime.now().isoformat()}] QueryRefiner ({label}): "
+                f"{'CONTINUE' if should_continue else 'STOP'} — "
+                f"{data.get('reasoning', 'no reasoning')} "
+                f"({len(new_queries)} new queries)"
+            )
+            logger.info(log_msg)
 
-        return {
-            "should_continue": should_continue,
-            "search_queries": new_queries,
-            "iteration": iteration + 1,
-            "execution_log": [log_msg],
-        }
+            return {
+                "should_continue": should_continue,
+                "search_queries": new_queries,
+                "iteration": iteration + 1,
+                "execution_log": [log_msg],
+            }
 
-    except Exception as e:
-        logger.error(f"Query refiner failed: {e}")
-        # On failure, stop the loop to prevent infinite retries
-        return {
-            "should_continue": False,
-            "iteration": iteration + 1,
-            "execution_log": [f"[{datetime.now().isoformat()}] QueryRefiner: FAILED (stopping) — {e}"],
-        }
+        except Exception as e:
+            last_error = e
+            logger.warning(f"QueryRefiner ({label}) failed: {e}")
+            continue
+
+    # All LLMs failed — stop the loop to prevent infinite retries
+    return {
+        "should_continue": False,
+        "iteration": iteration + 1,
+        "execution_log": [f"[{datetime.now().isoformat()}] QueryRefiner: ALL MODELS FAILED (stopping) — {last_error}"],
+    }

@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     # --- Agent Parameters ---
     max_search_iterations: int = 5
     max_queries_per_iteration: int = 5
-    search_rate_limit_seconds: float = 1.0
+    search_rate_limit_seconds: float = 0.2
     min_confidence_threshold: float = 0.3
     max_facts_per_extraction: int = 30
 
