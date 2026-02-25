@@ -10,11 +10,24 @@ Flow:
            └─ should_continue=False → graph_builder → report_generator → END
 """
 
+import os
 import logging
 
 from langgraph.graph import StateGraph, END
 
+from config.settings import settings
 from agent.state import AgentState
+
+
+def _configure_langsmith():
+    """Set LangSmith environment variables so LangChain auto-traces all LLM calls."""
+    if settings.langchain_api_key:
+        os.environ["LANGCHAIN_TRACING_V2"] = str(settings.langchain_tracing_v2).lower()
+        os.environ["LANGCHAIN_API_KEY"] = settings.langchain_api_key
+        os.environ["LANGCHAIN_PROJECT"] = settings.langchain_project
+
+
+_configure_langsmith()
 from agent.nodes.query_planner import query_planner
 from agent.nodes.search_executor import search_executor
 from agent.nodes.fact_extractor import fact_extractor
