@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #1a1a2e;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#FF6B6B", "font": {"color": "white"}, "id": "Timothy Overturf", "label": "Timothy Overturf", "shape": "dot", "size": 40, "title": "TARGET: Timothy Overturf\nCEO of Sisu Capital"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "Sisu Capital", "label": "Sisu Capital", "shape": "dot", "size": 15, "title": "Sisu Capital"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "18 years old at the time of founding Sisu Capital", "label": "18 years old at the time of founding Sisu Capital", "shape": "dot", "size": 15, "title": "18 years old at the time of founding Sisu Capital"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "2015", "label": "2015", "shape": "dot", "size": 15, "title": "2015"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "SEC", "label": "SEC", "shape": "diamond", "size": 25, "title": "organization: the regulatory body that charged Timothy Overturf and Sisu Capital with violations of securities laws"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "his father, Hans Overturf, to give investment advice to Sisu Capital clients", "label": "his father, Hans Overturf, to give investment advice to Sisu Capital clients", "shape": "dot", "size": 15, "title": "his father, Hans Overturf, to give investment advice to Sisu Capital clients"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "5 years of experience as an investment adviser", "label": "5 years of experience as an investment adviser", "shape": "dot", "size": 15, "title": "5 years of experience as an investment adviser"}, {"color": "#27AE60", "font": {"color": "white"}, "id": "Uniform Investment Adviser Law Examination", "label": "Uniform Investment Adviser Law Examination", "shape": "triangle", "size": 25, "title": "event: an industry exam completed by Timothy Overturf"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "clients", "label": "clients", "shape": "dot", "size": 15, "title": "clients"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "Sisu Capital clients", "label": "Sisu Capital clients", "shape": "dot", "size": 15, "title": "Sisu Capital clients"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "2013", "label": "2013", "shape": "dot", "size": 15, "title": "2013"}, {"color": "#4A90D9", "font": {"color": "white"}, "id": "Hansueli Overturf", "label": "Hansueli Overturf", "shape": "dot", "size": 25, "title": "person: Timothy Overturf\u0027s father, an investment adviser"}, {"color": "#4A90D9", "font": {"color": "white"}, "id": "Hans Overturf", "label": "Hans Overturf", "shape": "dot", "size": 25, "title": "person: Timothy Overturf\u0027s father, a suspended investment adviser"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "State of California from acting as an investment adviser", "label": "State of California from acting as an investment adviser", "shape": "dot", "size": 15, "title": "State of California from acting as an investment adviser"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "Timothy Overturf and Sisu Capital with violations of securities laws", "label": "Timothy Overturf and Sisu Capital with violations of securities laws", "shape": "dot", "size": 15, "title": "Timothy Overturf and Sisu Capital with violations of securities laws"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "Sisu Capital, Timothy Overturf, and Hansueli Overturf", "label": "Sisu Capital, Timothy Overturf, and Hansueli Overturf", "shape": "dot", "size": 15, "title": "Sisu Capital, Timothy Overturf, and Hansueli Overturf"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "permanent injunctions, disgorgement, and civil penalties", "label": "permanent injunctions, disgorgement, and civil penalties", "shape": "dot", "size": 15, "title": "permanent injunctions, disgorgement, and civil penalties"}, {"color": "#E74C3C", "font": {"color": "white"}, "id": "State of California", "label": "State of California", "shape": "star", "size": 25, "title": "location: the state where Hans Overturf was suspended from acting as an investment adviser"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "$10,000", "label": "$10,000", "shape": "dot", "size": 15, "title": "$10,000"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "2011-2014", "label": "2011-2014", "shape": "dot", "size": 15, "title": "2011-2014"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Financial Industry Regulatory Authority (FINRA)", "label": "Financial Industry Regulatory Authority (FINRA)", "shape": "diamond", "size": 25, "title": "organization: US regulatory agency"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "2017-2019", "label": "2017-2019", "shape": "dot", "size": 15, "title": "2017-2019"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "2014", "label": "2014", "shape": "dot", "size": 15, "title": "2014"}, {"color": "#E74C3C", "font": {"color": "white"}, "id": "Mill Valley, California", "label": "Mill Valley, California", "shape": "star", "size": 25, "title": "location: the location where Sisu Capital is based"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "deadpooled company", "label": "deadpooled company", "shape": "dot", "size": 15, "title": "deadpooled company"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "wealth management firm", "label": "wealth management firm", "shape": "dot", "size": 15, "title": "wealth management firm"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "1730 active competitors", "label": "1730 active competitors", "shape": "dot", "size": 15, "title": "1730 active competitors"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "client instructions", "label": "client instructions", "shape": "dot", "size": 15, "title": "client instructions"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "thinly-traded bank stock", "label": "thinly-traded bank stock", "shape": "dot", "size": 15, "title": "thinly-traded bank stock"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "antifraud provisions of the Investment Advisers Act of 1940", "label": "antifraud provisions of the Investment Advisers Act of 1940", "shape": "dot", "size": 15, "title": "antifraud provisions of the Investment Advisers Act of 1940"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Securities and Exchange Commission (SEC)", "label": "Securities and Exchange Commission (SEC)", "shape": "diamond", "size": 25, "title": "organization: US regulatory agency"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "client accounts", "label": "client accounts", "shape": "dot", "size": 15, "title": "client accounts"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "Sisu Capital and Timothy Overturf", "label": "Sisu Capital and Timothy Overturf", "shape": "dot", "size": 15, "title": "Sisu Capital and Timothy Overturf"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "making unauthorized and unsuitable trades on behalf of clients", "label": "making unauthorized and unsuitable trades on behalf of clients", "shape": "dot", "size": 15, "title": "making unauthorized and unsuitable trades on behalf of clients"}, {"color": "#95A5A6", "font": {"color": "white"}, "id": "over $2 million in advisory fees and other compensation", "label": "over $2 million in advisory fees and other compensation", "shape": "dot", "size": 15, "title": "over $2 million in advisory fees and other compensation"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "KlaymanToskes", "label": "KlaymanToskes", "shape": "diamond", "size": 25, "title": "organization: a law firm investigating Timothy Overturf and Sisu Capital"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "MDF Law", "label": "MDF Law", "shape": "diamond", "size": 25, "title": "organization: a law firm that reported on the SEC charges against Timothy Overturf and Sisu Capital"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Tracxn", "label": "Tracxn", "shape": "diamond", "size": 25, "title": "organization: a company that provides information on Sisu Capital"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Sonnlaw", "label": "Sonnlaw", "shape": "diamond", "size": 25, "title": "organization: a law firm that reported on the SEC charges against Timothy Overturf and Sisu Capital"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Law.com", "label": "Law.com", "shape": "diamond", "size": 25, "title": "organization: a website that reported on the SEC lawsuit against Sisu Capital, Timothy Overturf, and Hansueli Overturf"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "CourtListener", "label": "CourtListener", "shape": "diamond", "size": 25, "title": "organization: a website that provides information on court cases, including the SEC lawsuit against Sisu Capital, Timothy Overturf, and Hansueli Overturf"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "FINRA", "label": "FINRA", "shape": "diamond", "size": 25, "title": "organization: Financial Industry Regulatory Authority"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Raymond James Financial Services", "label": "Raymond James Financial Services", "shape": "diamond", "size": 25, "title": "organization: investment firm where Hansueli Overturf was employed"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Sisu Capital LLC", "label": "Sisu Capital LLC", "shape": "diamond", "size": 25, "title": "organization: investment advisory firm founded by Timothy Overturf"}, {"color": "#E74C3C", "font": {"color": "white"}, "id": "US District Court in the Northern District of California", "label": "US District Court in the Northern District of California", "shape": "star", "size": 25, "title": "location: court where the SEC lawsuit was filed"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Raymond James Financial Services, Inc.", "label": "Raymond James Financial Services, Inc.", "shape": "diamond", "size": 25, "title": "organization: investment firm"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Overturf Financial Services, Inc.", "label": "Overturf Financial Services, Inc.", "shape": "diamond", "size": 25, "title": "organization: investment firm"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "California Department of Business Oversight", "label": "California Department of Business Oversight", "shape": "diamond", "size": 25, "title": "organization: state regulatory agency"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Sonn Law Group", "label": "Sonn Law Group", "shape": "diamond", "size": 25, "title": "organization: law firm"}, {"color": "#E67E22", "font": {"color": "white"}, "id": "Marijuana Retail Report", "label": "Marijuana Retail Report", "shape": "diamond", "size": 25, "title": "organization: news outlet"}, {"color": "#E74C3C", "font": {"color": "white"}, "id": "Arcata, California", "label": "Arcata, California", "shape": "star", "size": 25, "title": "location: city in California"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "is CEO of", "title": "is CEO of\nConfidence: 100%\nCategory: professional", "to": "Sisu Capital", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "was", "title": "was\nConfidence: 100%\nCategory: biographical", "to": "18 years old at the time of founding Sisu Capital", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "started career as investment a", "title": "started career as investment adviser in\nConfidence: 100%\nCategory: professional", "to": "2015", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "registered with", "title": "registered with\nConfidence: 100%\nCategory: professional", "to": "SEC", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "allowed", "title": "allowed\nConfidence: 100%\nCategory: professional", "to": "his father, Hans Overturf, to give investment advice to Sisu Capital clients", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "has", "title": "has\nConfidence: 100%\nCategory: professional", "to": "5 years of experience as an investment adviser", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "completed", "title": "completed\nConfidence: 100%\nCategory: professional", "to": "Uniform Investment Adviser Law Examination", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "breached fiduciary duties to", "title": "breached fiduciary duties to\nConfidence: 100%\nCategory: professional", "to": "clients", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "allowed Hansueli Overturf to p", "title": "allowed Hansueli Overturf to provide investment advice\nConfidence: 80%\nCategory: professional", "to": "Sisu Capital clients", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "incorporated Sisu Capital", "title": "incorporated Sisu Capital\nConfidence: 100%\nCategory: biographical", "to": "2013", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Timothy Overturf", "label": "is son of", "title": "is son of\nConfidence: 100%\nCategory: biographical", "to": "Hansueli Overturf", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hans Overturf", "label": "was suspended by", "title": "was suspended by\nConfidence: 100%\nCategory: professional", "to": "State of California from acting as an investment adviser", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "SEC", "label": "charged", "title": "charged\nConfidence: 100%\nCategory: regulatory", "to": "Timothy Overturf and Sisu Capital with violations of securities laws", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "SEC", "label": "filed lawsuit against", "title": "filed lawsuit against\nConfidence: 100%\nCategory: regulatory", "to": "Sisu Capital, Timothy Overturf, and Hansueli Overturf", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "SEC", "label": "seeks", "title": "seeks\nConfidence: 80%\nCategory: legal", "to": "permanent injunctions, disgorgement, and civil penalties", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "was suspended by", "title": "was suspended by\nConfidence: 100%\nCategory: regulatory", "to": "State of California", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "provided investment advice to", "title": "provided investment advice to\nConfidence: 100%\nCategory: professional", "to": "Sisu Capital clients", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "was fined", "title": "was fined\nConfidence: 100%\nCategory: financial", "to": "$10,000", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "served a suspension as an inve", "title": "served a suspension as an investment adviser\nConfidence: 100%\nCategory: regulatory", "to": "2011-2014", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "is father of", "title": "is father of\nConfidence: 100%\nCategory: biographical", "to": "Timothy Overturf", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "was suspended by", "title": "was suspended by\nConfidence: 100%\nCategory: regulatory", "to": "Financial Industry Regulatory Authority (FINRA)", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Hansueli Overturf", "label": "provided investment advice dur", "title": "provided investment advice during suspension\nConfidence: 80%\nCategory: professional", "to": "2017-2019", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "was founded in", "title": "was founded in\nConfidence: 100%\nCategory: professional", "to": "2014", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "is based in", "title": "is based in\nConfidence: 100%\nCategory: professional", "to": "Mill Valley, California", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "is a", "title": "is a\nConfidence: 100%\nCategory: professional", "to": "deadpooled company", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "operates as a", "title": "operates as a\nConfidence: 100%\nCategory: professional", "to": "wealth management firm", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "has", "title": "has\nConfidence: 100%\nCategory: professional", "to": "1730 active competitors", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "was charged by", "title": "was charged by\nConfidence: 100%\nCategory: regulatory", "to": "SEC", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "executed trades that contradic", "title": "executed trades that contradicted\nConfidence: 100%\nCategory: professional", "to": "client instructions", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "invested client funds in", "title": "invested client funds in\nConfidence: 80%\nCategory: financial", "to": "thinly-traded bank stock", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "violated", "title": "violated\nConfidence: 100%\nCategory: regulatory", "to": "antifraud provisions of the Investment Advisers Act of 1940", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "was sued by", "title": "was sued by\nConfidence: 100%\nCategory: legal", "to": "Securities and Exchange Commission (SEC)", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital", "label": "made unauthorized trades", "title": "made unauthorized trades\nConfidence: 80%\nCategory: professional", "to": "client accounts", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital and Timothy Overturf", "label": "breached fiduciary duties by", "title": "breached fiduciary duties by\nConfidence: 100%\nCategory: professional", "to": "making unauthorized and unsuitable trades on behalf of clients", "width": 1}, {"arrows": "to", "color": "#2ECC71", "from": "Sisu Capital and Timothy Overturf", "label": "generated", "title": "generated\nConfidence: 100%\nCategory: financial", "to": "over $2 million in advisory fees and other compensation", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.01, "springLength": 200, "springConstant": 0.08}, "solver": "forceAtlas2Based", "stabilization": {"iterations": 150}}, "edges": {"arrows": {"to": {"enabled": true, "scaleFactor": 0.5}}, "smooth": {"type": "curvedCW", "roundness": 0.2}}, "interaction": {"hover": true, "tooltipDelay": 100}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
