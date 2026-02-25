@@ -37,3 +37,6 @@ outputs/logs/*.log
 
 # LangSmith
 .langsmith/
+
+# pyvis generated assets
+lib/
