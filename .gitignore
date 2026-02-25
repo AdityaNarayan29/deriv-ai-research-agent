@@ -40,3 +40,8 @@ outputs/logs/*.log
 
 # pyvis generated assets
 lib/
+
+# Next.js frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
