@@ -17,6 +17,11 @@ load_dotenv()
 
 from agent.graph import build_research_graph, create_initial_state
 from config.settings import settings
+from demo_data import (
+    DEMO_TARGET_NAME, DEMO_TARGET_CONTEXT,
+    DEMO_FACTS, DEMO_ENTITIES, DEMO_RISK_FLAGS,
+    DEMO_REPORT, DEMO_EXECUTION_LOG, DEMO_PIPELINE_STEPS,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -188,7 +193,7 @@ async def investigate(req: InvestigateRequest):
                 investigations[investigation_id] = result
 
                 asyncio.run_coroutine_threadsafe(
-                    queue.put(_sse_event("complete", result)),
+                    queue.put(_sse_event("complete", {"result": result})),
                     loop,
                 )
 
@@ -243,3 +248,107 @@ async def health():
             "langsmith": bool(settings.langchain_api_key),
         },
     }
+
+
+@app.post("/api/demo")
+async def demo_investigate():
+    """Stream a pre-built demo investigation via SSE — no API credits used."""
+    investigation_id = str(uuid.uuid4())
+
+    async def demo_stream():
+        # Map log lines to pipeline steps for realistic timing
+        log_idx = 0
+        logs_per_step = len(DEMO_EXECUTION_LOG) // len(DEMO_PIPELINE_STEPS)
+
+        for i, (node, iteration, progress) in enumerate(DEMO_PIPELINE_STEPS):
+            # node_start event
+            yield _sse_event("node_start", {
+                "node": node,
+                "iteration": iteration,
+                "progress": progress,
+            })
+            await asyncio.sleep(0.3)
+
+            # Send log lines for this step
+            step_end = min(log_idx + logs_per_step + 1, len(DEMO_EXECUTION_LOG))
+            for j in range(log_idx, step_end):
+                yield _sse_event("log", {"message": DEMO_EXECUTION_LOG[j]})
+                await asyncio.sleep(0.15)
+            log_idx = step_end
+
+            # Send data updates at appropriate pipeline stages
+            if node == "fact_extractor" and iteration == 0:
+                yield _sse_event("facts_update", {
+                    "facts": DEMO_FACTS[:15],
+                    "total": 15,
+                })
+                yield _sse_event("entities_update", {
+                    "entities": DEMO_ENTITIES[:10],
+                    "total": 10,
+                })
+            elif node == "fact_extractor" and iteration == 1:
+                yield _sse_event("facts_update", {
+                    "facts": DEMO_FACTS[15:33],
+                    "total": 33,
+                })
+                yield _sse_event("entities_update", {
+                    "entities": DEMO_ENTITIES[10:18],
+                    "total": 18,
+                })
+            elif node == "fact_extractor" and iteration == 2:
+                yield _sse_event("facts_update", {
+                    "facts": DEMO_FACTS[33:],
+                    "total": len(DEMO_FACTS),
+                })
+                yield _sse_event("entities_update", {
+                    "entities": DEMO_ENTITIES[18:],
+                    "total": len(DEMO_ENTITIES),
+                })
+            elif node == "risk_analyzer" and iteration == 0:
+                yield _sse_event("risks_update", {
+                    "risk_flags": DEMO_RISK_FLAGS[:4],
+                    "total": 4,
+                })
+            elif node == "risk_analyzer" and iteration == 1:
+                yield _sse_event("risks_update", {
+                    "risk_flags": DEMO_RISK_FLAGS[4:7],
+                    "total": 7,
+                })
+            elif node == "risk_analyzer" and iteration == 2:
+                yield _sse_event("risks_update", {
+                    "risk_flags": DEMO_RISK_FLAGS[7:],
+                    "total": len(DEMO_RISK_FLAGS),
+                })
+
+            await asyncio.sleep(0.2)
+
+        # Flush remaining log lines
+        for j in range(log_idx, len(DEMO_EXECUTION_LOG)):
+            yield _sse_event("log", {"message": DEMO_EXECUTION_LOG[j]})
+            await asyncio.sleep(0.1)
+
+        # Final complete event
+        result = {
+            "id": investigation_id,
+            "target_name": DEMO_TARGET_NAME,
+            "target_context": DEMO_TARGET_CONTEXT,
+            "facts": DEMO_FACTS,
+            "entities": DEMO_ENTITIES,
+            "risk_flags": DEMO_RISK_FLAGS,
+            "report": DEMO_REPORT,
+            "graph_html": "",
+            "iteration": 3,
+            "execution_log": DEMO_EXECUTION_LOG,
+        }
+        investigations[investigation_id] = result
+        yield _sse_event("complete", {"result": result})
+
+    return StreamingResponse(
+        demo_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )

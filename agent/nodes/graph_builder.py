@@ -1,8 +1,7 @@
-"""Node 6: Graph Builder — builds identity graph using NetworkX + pyvis.
+"""Node 6: Graph Builder — builds identity graph using graph DB + pyvis.
 
-Generates a clean, interactive HTML visualization of the identity network.
-Only known entities become nodes; facts become labeled edges between them.
-Includes an injected legend and stats overlay.
+Stores entities and relationships in a graph database (NetworkX + SQLite),
+computes analytics (centrality, communities), and exports interactive HTML.
 """
 
 import os
@@ -14,6 +13,8 @@ from pyvis.network import Network
 
 from config.settings import settings
 from agent.state import AgentState, EntityType
+from agent.graph_db import get_graph_db
+from agent.graph_db.analytics import compute_investigation_analytics
 
 logger = logging.getLogger(__name__)
 
@@ -41,25 +42,72 @@ TARGET_COLOR = {
 }
 
 
+_STOP_WORDS = {"the", "of", "and", "for", "in", "a", "an", "inc", "corp",
+                "llc", "ltd", "co", "plc", "sa", "ag", "gmbh", "na"}
+
+
+def _normalize(name: str) -> str:
+    """Strip corporate suffixes, punctuation, and stop words for comparison."""
+    import re
+    s = name.lower().strip()
+    s = re.sub(r"[,.\-'\"()]", " ", s)
+    tokens = [t for t in s.split() if t not in _STOP_WORDS and len(t) > 0]
+    return " ".join(tokens)
+
+
+def _is_acronym_of(short: str, long: str) -> bool:
+    """Check if 'short' is an acronym of 'long' (e.g. SEC -> Securities and Exchange Commission)."""
+    if len(short) < 2 or len(short) > 6:
+        return False
+    words = [w for w in long.split() if w.lower() not in _STOP_WORDS]
+    if len(words) < 2:
+        return False
+    initials = "".join(w[0] for w in words).lower()
+    return short.lower() == initials
+
+
 def _fuzzy_match(text: str, known_names: dict[str, str]) -> str | None:
-    """Find a known entity name that matches the text (case-insensitive, substring)."""
+    """Find a known entity name that matches the text.
+
+    Matching pipeline (in priority order):
+    1. Exact case-insensitive match
+    2. Normalized match (strip suffixes/stop words)
+    3. Acronym match (SEC <-> Securities and Exchange Commission)
+    4. Bidirectional substring match (min 4 chars to avoid false positives)
+    """
     text_lower = text.lower().strip()
-    # Exact match
+
+    # 1. Exact match
     if text_lower in known_names:
         return known_names[text_lower]
-    # Substring match: "Sisu Capital LLC" matches entity "Sisu Capital"
+
+    text_norm = _normalize(text)
+
+    # 2. Normalized match
     for known_lower, canonical in known_names.items():
-        if known_lower in text_lower or text_lower in known_lower:
+        if _normalize(known_lower) == text_norm and text_norm:
             return canonical
+
+    # 3. Acronym match
+    for known_lower, canonical in known_names.items():
+        if _is_acronym_of(text_lower, known_lower) or _is_acronym_of(known_lower, text_lower):
+            return canonical
+
+    # 4. Bidirectional substring (require min 4 chars to avoid "X" matching everything)
+    if len(text_lower) >= 4:
+        for known_lower, canonical in known_names.items():
+            if len(known_lower) >= 4 and (known_lower in text_lower or text_lower in known_lower):
+                return canonical
+
     return None
 
 
 def graph_builder(state: AgentState) -> dict:
-    """Build a NetworkX identity graph and export to interactive HTML.
+    """Build an identity graph, store in graph DB, compute analytics, export HTML.
 
-    Only creates nodes for the target + discovered entities.
-    Facts become edges between matching entity nodes.
-    Facts referencing non-entity strings are shown as tooltips, not nodes.
+    1. Populates the graph database with entities and fact-based relationships
+    2. Computes centrality and community analytics
+    3. Exports interactive pyvis HTML visualization
     """
     entities = state.get("entities", [])
     facts = state.get("facts", [])
@@ -70,7 +118,12 @@ def graph_builder(state: AgentState) -> dict:
             "execution_log": [f"[{datetime.now().isoformat()}] GraphBuilder: No entities or facts to graph"],
         }
 
-    G = nx.DiGraph()
+    # --- Initialize graph database ---
+    os.makedirs(settings.output_dir, exist_ok=True)
+    safe_name = target_name.replace(" ", "_").replace(",", "")[:50]
+    db_path = os.path.join(settings.output_dir, f"{safe_name}_graph.db")
+    db = get_graph_db(db_path=db_path)
+    db.clear()
 
     # Build lookup: lowercase name -> canonical display name
     known_names: dict[str, str] = {target_name.lower(): target_name}
@@ -90,8 +143,19 @@ def graph_builder(state: AgentState) -> dict:
             if match:
                 entity_fact_count[match] = entity_fact_count.get(match, 0) + 1
 
-    # --- Add target node ---
+    # --- Store target in graph DB + build pyvis graph ---
+    G = nx.DiGraph()
+
     target_facts = entity_fact_count.get(target_name, 0)
+    db.add_entity(
+        entity_id=target_name,
+        name=target_name,
+        entity_type="target",
+        properties={
+            "context": state.get("target_context", ""),
+            "fact_count": target_facts,
+        },
+    )
     G.add_node(
         target_name,
         title=f"<b>TARGET</b><br>{target_name}<br><i>{state.get('target_context', '')}</i><br>Referenced in {target_facts} fact(s)",
@@ -103,12 +167,23 @@ def graph_builder(state: AgentState) -> dict:
         shadow={"enabled": True, "color": "rgba(239,68,68,0.4)", "size": 12},
     )
 
-    # --- Add entity nodes ---
+    # --- Store entities in graph DB + build pyvis nodes ---
     for entity in entities:
         if entity.name == target_name:
             continue
         fact_count = entity_fact_count.get(entity.name, 0)
         node_size = min(40, max(18, 14 + fact_count * 3))
+
+        db.add_entity(
+            entity_id=entity.name,
+            name=entity.name,
+            entity_type=entity.entity_type.value,
+            properties={
+                "description": entity.description,
+                "fact_count": fact_count,
+                "investigated": entity.investigated,
+            },
+        )
 
         tooltip = (
             f"<b>{entity.name}</b><br>"
@@ -127,8 +202,7 @@ def graph_builder(state: AgentState) -> dict:
             font={"size": 13, "color": "#e2e8f0"},
         )
 
-    # --- Add edges: only between known entity nodes ---
-    # Track edges so we can merge parallel edges into one with multiple labels
+    # --- Store relationships in graph DB + build pyvis edges ---
     edge_labels: dict[tuple[str, str], list[dict]] = {}
 
     for fact in facts:
@@ -139,6 +213,19 @@ def graph_builder(state: AgentState) -> dict:
             continue
         if source_match == target_match:
             continue
+
+        # Store each fact as a relationship in the graph DB
+        db.add_relationship(
+            source_id=source_match,
+            target_id=target_match,
+            rel_type=fact.predicate,
+            properties={
+                "confidence": fact.confidence,
+                "category": fact.category.value,
+                "source_url": fact.source_url,
+                "fact_id": fact.id,
+            },
+        )
 
         key = (source_match, target_match)
         if key not in edge_labels:
@@ -151,17 +238,14 @@ def graph_builder(state: AgentState) -> dict:
         })
 
     for (source, target), label_list in edge_labels.items():
-        # Use the highest confidence for edge styling
         max_conf = max(l["confidence"] for l in label_list)
         width = max(1.5, max_conf * 4)
         edge_color = _edge_color(max_conf)
 
-        # Show the shortest/most descriptive predicate as the label
         display_label = min(label_list, key=lambda l: len(l["predicate"]))["predicate"]
         if len(display_label) > 25:
             display_label = display_label[:22] + "..."
 
-        # Rich tooltip with all facts on this edge
         tooltip_lines = [f"<b>{source} → {target}</b><br><br>"]
         for i, l in enumerate(label_list, 1):
             tooltip_lines.append(
@@ -179,9 +263,21 @@ def graph_builder(state: AgentState) -> dict:
             font={"size": 10, "color": "#94a3b8", "strokeWidth": 3, "strokeColor": "#0f172a"},
         )
 
+    # --- Compute graph analytics ---
+    analytics = compute_investigation_analytics(db)
+    logger.info(
+        f"GraphBuilder analytics: {analytics['node_count']} nodes, "
+        f"{analytics['edge_count']} edges, "
+        f"{analytics['num_communities']} communities, "
+        f"{analytics['num_components']} components"
+    )
+
+    # Save graph DB to JSON for portability
+    json_path = os.path.join(settings.output_dir, f"{safe_name}_graph.json")
+    db.save(json_path)
+
     # --- Export to interactive HTML ---
     os.makedirs(settings.graphs_dir, exist_ok=True)
-    safe_name = target_name.replace(" ", "_").replace(",", "")[:50]
     html_path = os.path.join(settings.graphs_dir, f"{safe_name}_identity_graph.html")
 
     net = Network(
@@ -236,7 +332,9 @@ def graph_builder(state: AgentState) -> dict:
 
     log_msg = (
         f"[{datetime.now().isoformat()}] GraphBuilder: "
-        f"Built graph with {G.number_of_nodes()} nodes, {G.number_of_edges()} edges → {html_path}"
+        f"Stored {db.node_count()} entities, {db.edge_count()} relationships in graph DB → {db_path} | "
+        f"Analytics: {analytics['num_communities']} communities, {analytics['num_components']} components | "
+        f"Built visualization with {G.number_of_nodes()} nodes, {G.number_of_edges()} edges → {html_path}"
     )
     logger.info(log_msg)
 
@@ -429,7 +527,63 @@ def _inject_custom_styles(html_path: str, target_name: str, num_nodes: int, num_
     with open(html_path, "r") as f:
         html = f.read()
 
-    html = html.replace("</body>", legend_html + "\n</body>")
+    # Style the navigation buttons and tooltip for dark theme
+    nav_and_tooltip_css = """
+    <style>
+        /* Navigation buttons — dark theme */
+        .vis-navigation .vis-button {
+            background-color: rgba(30, 30, 30, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 6px !important;
+            backdrop-filter: blur(6px);
+        }
+        .vis-navigation .vis-button:hover {
+            background-color: rgba(60, 60, 60, 0.9) !important;
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.25);
+        }
+        .vis-button.vis-up, .vis-button.vis-down,
+        .vis-button.vis-left, .vis-button.vis-right,
+        .vis-button.vis-zoomIn, .vis-button.vis-zoomOut,
+        .vis-button.vis-zoomExtends {
+            background-image: none !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .vis-button.vis-up::after { content: '\\2191'; color: #d4d4d4; font-size: 16px; }
+        .vis-button.vis-down::after { content: '\\2193'; color: #d4d4d4; font-size: 16px; }
+        .vis-button.vis-left::after { content: '\\2190'; color: #d4d4d4; font-size: 16px; }
+        .vis-button.vis-right::after { content: '\\2192'; color: #d4d4d4; font-size: 16px; }
+        .vis-button.vis-zoomIn::after { content: '+'; color: #d4d4d4; font-size: 18px; font-weight: bold; }
+        .vis-button.vis-zoomOut::after { content: '\\2212'; color: #d4d4d4; font-size: 18px; font-weight: bold; }
+        .vis-button.vis-zoomExtends::after { content: '\\2922'; color: #d4d4d4; font-size: 16px; }
+
+        /* Tooltip — dark theme, render HTML properly */
+        div.vis-tooltip {
+            background: rgba(23, 23, 23, 0.95) !important;
+            border: 1px solid rgba(249, 115, 22, 0.2) !important;
+            border-radius: 8px !important;
+            color: #e5e5e5 !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+            font-size: 12px !important;
+            padding: 10px 14px !important;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+            max-width: 350px !important;
+            line-height: 1.5 !important;
+        }
+        div.vis-tooltip b {
+            color: #ffffff;
+        }
+        div.vis-tooltip i {
+            color: #a3a3a3;
+        }
+    </style>
+    """
+
+    html = html.replace("</body>", nav_and_tooltip_css + legend_html + "\n</body>")
 
     with open(html_path, "w") as f:
         f.write(html)

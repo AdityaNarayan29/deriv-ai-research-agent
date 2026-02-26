@@ -11,9 +11,9 @@ from datetime import datetime
 
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage
 
 from config.settings import settings
+from agent.llm_retry import invoke_with_retry
 from agent.state import AgentState, SearchQuery, FactCategory
 from agent.prompts.templates import QUERY_REFINER_PROMPT
 
@@ -100,7 +100,7 @@ def query_refiner(state: AgentState) -> dict:
     last_error = None
     for llm, label in _get_llm_candidates():
         try:
-            response = llm.invoke([HumanMessage(content=prompt)])
+            response = invoke_with_retry(llm, prompt, label=f"QueryRefiner/{label}")
             content = response.content
 
             # Parse JSON

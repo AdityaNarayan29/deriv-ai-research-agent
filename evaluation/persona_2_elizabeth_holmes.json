@@ -1,0 +1,62 @@
+{
+  "target_name": "Elizabeth Holmes",
+  "target_context": "Founder of Theranos",
+  "max_iterations": 3,
+
+  "expected_entities": [
+    {"name": "Theranos", "entity_type": "organization", "importance": "critical"},
+    {"name": "Ramesh Balwani", "entity_type": "person", "importance": "critical"},
+    {"name": "SEC", "entity_type": "organization", "importance": "critical"},
+    {"name": "DOJ", "entity_type": "organization", "importance": "critical"},
+    {"name": "Walgreens", "entity_type": "organization", "importance": "high"},
+    {"name": "Safeway", "entity_type": "organization", "importance": "high"},
+    {"name": "George Shultz", "entity_type": "person", "importance": "high"},
+    {"name": "Tyler Shultz", "entity_type": "person", "importance": "high"},
+    {"name": "Rupert Murdoch", "entity_type": "person", "importance": "medium"},
+    {"name": "David Boies", "entity_type": "person", "importance": "medium"},
+    {"name": "Stanford University", "entity_type": "organization", "importance": "medium"},
+    {"name": "Edison", "entity_type": "organization", "importance": "high"},
+    {"name": "CMS", "entity_type": "organization", "importance": "medium"},
+    {"name": "Palo Alto, California", "entity_type": "location", "importance": "low"},
+    {"name": "U.S. District Court, Northern District of California", "entity_type": "organization", "importance": "medium"}
+  ],
+
+  "expected_facts": [
+    {"description": "Elizabeth Holmes founded Theranos in 2003", "importance": "critical"},
+    {"description": "Holmes was convicted of wire fraud (4 counts) in Jan 2022", "importance": "critical"},
+    {"description": "Theranos claimed to run 200+ tests from a single drop of blood", "importance": "critical"},
+    {"description": "Ramesh 'Sunny' Balwani was COO and romantic partner of Holmes", "importance": "critical"},
+    {"description": "Theranos reached valuation of $9 billion", "importance": "high"},
+    {"description": "SEC charged Holmes with massive fraud (2018)", "importance": "critical"},
+    {"description": "Holmes dropped out of Stanford University at age 19", "importance": "medium"},
+    {"description": "Walgreens signed $140M deal with Theranos", "importance": "high"},
+    {"description": "CMS revoked Theranos lab's CLIA certificate", "importance": "high"},
+    {"description": "Holmes sentenced to 11+ years in federal prison", "importance": "critical"},
+    {"description": "George Shultz served on Theranos board of directors", "importance": "high"},
+    {"description": "Tyler Shultz was a whistleblower who worked at Theranos", "importance": "high"}
+  ],
+
+  "expected_risks": [
+    {"description": "Federal wire fraud conviction (4 counts)", "min_severity": 5, "importance": "critical"},
+    {"description": "SEC fraud charges and $500K penalty", "min_severity": 5, "importance": "critical"},
+    {"description": "Fraudulent technology claims (Edison device)", "min_severity": 5, "importance": "critical"},
+    {"description": "Investor deception ($700M+ raised on false claims)", "min_severity": 5, "importance": "critical"},
+    {"description": "Patient safety risk (inaccurate blood test results)", "min_severity": 5, "importance": "critical"},
+    {"description": "Intimidation of whistleblowers", "min_severity": 4, "importance": "high"}
+  ],
+
+  "evaluation_criteria": {
+    "entity_discovery": {
+      "minimum_score": 15,
+      "maximum_score": 22
+    },
+    "fact_extraction": {
+      "minimum_score": 16,
+      "maximum_score": 24
+    },
+    "risk_identification": {
+      "minimum_score": 14,
+      "maximum_score": 20
+    }
+  }
+}

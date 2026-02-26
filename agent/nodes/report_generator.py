@@ -10,9 +10,9 @@ from datetime import datetime
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
-from langchain_core.messages import HumanMessage
 
 from config.settings import settings
+from agent.llm_retry import invoke_with_retry
 from agent.state import AgentState
 from agent.prompts.templates import REPORT_GENERATOR_PROMPT
 
@@ -82,7 +82,7 @@ def report_generator(state: AgentState) -> dict:
     # Try Gemini first, fall back to Groq
     for llm, model_name in _get_llm_candidates():
         try:
-            response = llm.invoke([HumanMessage(content=prompt)])
+            response = invoke_with_retry(llm, prompt, label=f"ReportGenerator/{model_name}")
             report = response.content
 
             # Save report to file

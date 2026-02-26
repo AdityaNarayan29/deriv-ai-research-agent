@@ -1,0 +1,81 @@
+{
+  "target_name": "Timothy Overturf",
+  "target_context": "CEO of Sisu Capital",
+  "max_iterations": 3,
+
+  "expected_entities": [
+    {"name": "Sisu Capital", "entity_type": "organization", "importance": "critical"},
+    {"name": "Hansueli Overturf", "entity_type": "person", "importance": "critical"},
+    {"name": "SEC", "entity_type": "organization", "importance": "critical"},
+    {"name": "FINRA", "entity_type": "organization", "importance": "high"},
+    {"name": "California DFPI", "entity_type": "organization", "importance": "high"},
+    {"name": "Overturf Financial Services", "entity_type": "organization", "importance": "high"},
+    {"name": "Joseppi's LLC", "entity_type": "organization", "importance": "medium"},
+    {"name": "Arcata Theatre Lounge", "entity_type": "organization", "importance": "medium"},
+    {"name": "Joseph Ostini", "entity_type": "person", "importance": "medium"},
+    {"name": "Redwood Capital Bancorp", "entity_type": "organization", "importance": "high"},
+    {"name": "Noir Execution Inc", "entity_type": "organization", "importance": "medium"},
+    {"name": "Morgan Stanley", "entity_type": "organization", "importance": "low"},
+    {"name": "Raymond James Financial Services", "entity_type": "organization", "importance": "low"},
+    {"name": "NLRB", "entity_type": "organization", "importance": "medium"},
+    {"name": "Mill Valley, California", "entity_type": "location", "importance": "low"},
+    {"name": "Arcata, California", "entity_type": "location", "importance": "low"}
+  ],
+
+  "expected_facts": [
+    {"description": "Timothy Overturf is CEO/founder of Sisu Capital", "importance": "critical"},
+    {"description": "SEC filed civil fraud complaint (LR-25807) against Sisu Capital and Overturf", "importance": "critical"},
+    {"description": "Hansueli Overturf is father and co-defendant", "importance": "critical"},
+    {"description": "Sisu Capital managed ~$51.7M for ~42 clients", "importance": "high"},
+    {"description": "California DFPI revoked Sisu Capital certificate (Jan 2021)", "importance": "critical"},
+    {"description": "FINRA fined/suspended Hansueli Overturf ($10K, 2011)", "importance": "high"},
+    {"description": "Unauthorized trading in Redwood Capital Bancorp (RWCB) stock", "importance": "critical"},
+    {"description": "Timothy Overturf co-purchased Arcata Theatre Lounge via Joseppi's LLC", "importance": "medium"},
+    {"description": "NLRB found unfair labor practices by Joseppi's LLC", "importance": "medium"},
+    {"description": "Timothy is President of Noir Execution Inc", "importance": "medium"},
+    {"description": "Hansueli Overturf previously worked at Morgan Stanley", "importance": "low"},
+    {"description": "Timothy founded Sisu Capital at approximately age 18", "importance": "medium"},
+    {"description": "Hansueli provided unauthorized investment advice to Sisu clients", "importance": "critical"},
+    {"description": "Hans accused of bilking $730K from elderly patients via Redwood Parks Lodge in 2004", "importance": "high"}
+  ],
+
+  "expected_risks": [
+    {"description": "SEC civil fraud action", "min_severity": 5, "importance": "critical"},
+    {"description": "CA DFPI certificate revocation", "min_severity": 4, "importance": "critical"},
+    {"description": "Unauthorized trading in thinly-traded stock", "min_severity": 4, "importance": "critical"},
+    {"description": "Father-son fraud pattern / Hans Overturf involvement", "min_severity": 4, "importance": "critical"},
+    {"description": "Excessive personal draws from client funds", "min_severity": 3, "importance": "high"},
+    {"description": "NLRB labor violations (cross-domain compliance failure)", "min_severity": 2, "importance": "medium"},
+    {"description": "Multiple entity creation (potential asset shielding)", "min_severity": 2, "importance": "medium"}
+  ],
+
+  "evaluation_criteria": {
+    "entity_discovery": {
+      "critical_entities_found": "Must find ALL critical entities (Sisu Capital, Hans Overturf, SEC)",
+      "scoring": "critical=3pts, high=2pts, medium=1pt, low=0.5pts",
+      "minimum_score": 15,
+      "maximum_score": 25
+    },
+    "fact_extraction": {
+      "critical_facts_found": "Must extract ALL critical facts (SEC action, Hans connection, DFPI revocation)",
+      "scoring": "critical=3pts, high=2pts, medium=1pt, low=0.5pts",
+      "minimum_score": 18,
+      "maximum_score": 28
+    },
+    "risk_identification": {
+      "critical_risks_found": "Must identify ALL critical risks (SEC fraud, DFPI revocation, unauthorized trading, Hans involvement)",
+      "scoring": "critical=3pts, high=2pts, medium=1pt",
+      "minimum_score": 12,
+      "maximum_score": 18
+    },
+    "non_obvious_connections": {
+      "description": "Agent should discover at least 2 non-obvious connections",
+      "examples": [
+        "Noir Execution Inc incorporated just before Sisu Capital shut down",
+        "Redwood Capital Bancorp stock potentially for crypto bank charter scheme",
+        "Hans Overturf's 2004 Redwood Parks Lodge fraud predating Sisu Capital",
+        "NLRB violations at Joseppi's LLC showing cross-domain compliance failure"
+      ]
+    }
+  }
+}

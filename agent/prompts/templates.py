@@ -47,23 +47,29 @@ IMPORTANT:
 """
 
 FACT_EXTRACTOR_PROMPT = """\
-You are a precise fact extraction engine. Extract structured facts from the following \
-search results about an investigation target.
+You are a precise fact extraction engine for due diligence investigations. Extract ALL \
+structured facts and entities from the following search results.
 
 TARGET: {target_name} ({target_context})
 
 SEARCH RESULTS:
 {search_results}
 
-Extract every factual claim you can identify. For each fact, provide:
-1. Subject: the entity the fact is about
-2. Predicate: the relationship or attribute (e.g., "is CEO of", "was founded in", "filed lawsuit against")
-3. Object: the other entity or value
-4. Confidence: 0.0 to 1.0 (1.0 = explicitly stated with strong source, 0.5 = implied, 0.2 = speculative)
+## Instructions
+
+Extract EVERY factual claim — aim for thoroughness. For each fact, provide:
+1. Subject: the entity performing the action or being described
+2. Predicate: the relationship/action (e.g., "is CEO of", "was charged by", "filed complaint against")
+3. Object: the other entity, value, or location
+4. Confidence: 0.0 to 1.0 (1.0 = explicitly stated, 0.5 = implied, 0.2 = speculative)
 5. Category: biographical, professional, financial, legal, social, or regulatory
 
-Also extract any NEW entities (people, organizations, events, filings, locations) that \
-are connected to the target.
+Also extract ALL entities mentioned that connect to the target, including:
+- **People**: co-defendants, business partners, family members, lawyers, judges, investigators
+- **Organizations**: companies, funds, shell entities, regulators, courts, law firms, banks
+- **Filings**: SEC complaints, court cases (include case numbers), regulatory orders
+- **Locations**: cities, states, countries where events occurred or entities are based
+- **Events**: enforcement actions, lawsuits, transactions, disciplinary proceedings
 
 Respond in this exact JSON format:
 {{
@@ -80,17 +86,18 @@ Respond in this exact JSON format:
     {{
       "name": "entity name",
       "entity_type": "person|organization|event|filing|location",
-      "description": "brief description"
+      "description": "brief description of role/relevance"
     }}
   ]
 }}
 
 IMPORTANT:
-- Only extract facts supported by the search results
-- Be precise with names, dates, and amounts
-- Assign confidence based on source reliability and how explicitly the fact is stated
-- Flag entities that warrant further investigation
-- Do NOT fabricate or infer facts beyond what the text states
+- Extract MAXIMUM facts — a dense identity graph requires many connections
+- Include entities even if only mentioned once (regulators, courts, law firms, etc.)
+- Use the EXACT names from the text (e.g., "SEC" not "Securities and Exchange Commission")
+- Be precise with names, dates, amounts, case numbers, and CRD numbers
+- Every fact should connect two distinct entities that could become graph nodes
+- Do NOT fabricate facts, but DO extract every fact the text supports
 """
 
 RISK_ANALYZER_PROMPT = """\

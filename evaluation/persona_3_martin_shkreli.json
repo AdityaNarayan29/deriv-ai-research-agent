@@ -1,0 +1,61 @@
+{
+  "target_name": "Martin Shkreli",
+  "target_context": "Former CEO of Turing Pharmaceuticals",
+  "max_iterations": 3,
+
+  "expected_entities": [
+    {"name": "Turing Pharmaceuticals", "entity_type": "organization", "importance": "critical"},
+    {"name": "Retrophin", "entity_type": "organization", "importance": "critical"},
+    {"name": "MSMB Capital Management", "entity_type": "organization", "importance": "high"},
+    {"name": "MSMB Healthcare", "entity_type": "organization", "importance": "high"},
+    {"name": "SEC", "entity_type": "organization", "importance": "critical"},
+    {"name": "DOJ", "entity_type": "organization", "importance": "critical"},
+    {"name": "FTC", "entity_type": "organization", "importance": "high"},
+    {"name": "Daraprim", "entity_type": "organization", "importance": "critical"},
+    {"name": "Wu-Tang Clan", "entity_type": "organization", "importance": "medium"},
+    {"name": "Evan Greebel", "entity_type": "person", "importance": "high"},
+    {"name": "Kalobios Pharmaceuticals", "entity_type": "organization", "importance": "medium"},
+    {"name": "Vyera Pharmaceuticals", "entity_type": "organization", "importance": "high"},
+    {"name": "U.S. District Court, Eastern District of New York", "entity_type": "organization", "importance": "medium"},
+    {"name": "Baruch College", "entity_type": "organization", "importance": "low"}
+  ],
+
+  "expected_facts": [
+    {"description": "Shkreli raised Daraprim price from $13.50 to $750 per pill (5,000% increase)", "importance": "critical"},
+    {"description": "Shkreli was convicted of securities fraud in Aug 2017", "importance": "critical"},
+    {"description": "Shkreli founded MSMB Capital Management hedge fund", "importance": "high"},
+    {"description": "Shkreli founded Retrophin in 2011", "importance": "high"},
+    {"description": "Retrophin sued Shkreli for $65M for misuse of company funds", "importance": "critical"},
+    {"description": "Shkreli sentenced to 7 years in federal prison", "importance": "critical"},
+    {"description": "FTC ordered lifetime ban from pharmaceutical industry", "importance": "critical"},
+    {"description": "Shkreli purchased Wu-Tang Clan album for $2M", "importance": "medium"},
+    {"description": "Shkreli was barred from securities industry by SEC", "importance": "high"},
+    {"description": "Evan Greebel was co-defendant (Retrophin's outside counsel)", "importance": "high"},
+    {"description": "Shkreli ordered to pay $64.6M in disgorgement for Daraprim scheme", "importance": "critical"}
+  ],
+
+  "expected_risks": [
+    {"description": "Securities fraud conviction (3 counts)", "min_severity": 5, "importance": "critical"},
+    {"description": "Price gouging of life-saving medication (Daraprim)", "min_severity": 5, "importance": "critical"},
+    {"description": "FTC lifetime pharmaceutical industry ban", "min_severity": 5, "importance": "critical"},
+    {"description": "Hedge fund investor fraud (MSMB Capital)", "min_severity": 5, "importance": "critical"},
+    {"description": "Corporate fund misappropriation (Retrophin)", "min_severity": 4, "importance": "high"},
+    {"description": "Pattern of entity creation to perpetrate fraud", "min_severity": 4, "importance": "high"},
+    {"description": "SEC industry bar", "min_severity": 4, "importance": "high"}
+  ],
+
+  "evaluation_criteria": {
+    "entity_discovery": {
+      "minimum_score": 14,
+      "maximum_score": 22
+    },
+    "fact_extraction": {
+      "minimum_score": 15,
+      "maximum_score": 22
+    },
+    "risk_identification": {
+      "minimum_score": 14,
+      "maximum_score": 21
+    }
+  }
+}

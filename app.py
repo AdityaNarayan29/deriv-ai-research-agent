@@ -7,8 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from agent.graph import build_research_graph, create_initial_state
-from agent.state import AgentState
+from agent.state import AgentState, ExtractedFact, Entity, RiskFlag, FactCategory, EntityType, RiskCategory, RiskSeverity
 from config.settings import settings
+from demo_data import (
+    DEMO_FACTS, DEMO_ENTITIES, DEMO_RISK_FLAGS,
+    DEMO_REPORT, DEMO_EXECUTION_LOG,
+)
 
 
 # --- Page config ---
@@ -54,7 +58,69 @@ with col1:
 with col2:
     target_context = st.text_input("Context", value="CEO of Sisu Capital", placeholder="e.g., CEO of Company X")
 
-run_btn = st.button("🚀 Start Investigation", type="primary", use_container_width=True)
+col_btn1, col_btn2 = st.columns([3, 1])
+with col_btn1:
+    run_btn = st.button("🚀 Start Investigation", type="primary", use_container_width=True)
+with col_btn2:
+    demo_btn = st.button("🎯 Demo", use_container_width=True)
+
+# --- Demo Mode ---
+if demo_btn:
+    st.divider()
+    st.header("📊 Results  `DEMO`")
+
+    # Convert demo dicts → Pydantic models
+    facts = [ExtractedFact(**{**f, "category": FactCategory(f["category"])}) for f in DEMO_FACTS]
+    entities = [Entity(**{**e, "entity_type": EntityType(e["entity_type"])}) for e in DEMO_ENTITIES]
+    risk_flags = [RiskFlag(**{**r, "severity": RiskSeverity(r["severity"]), "category": RiskCategory(r["category"])}) for r in DEMO_RISK_FLAGS]
+
+    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+    col_m1.metric("Facts Extracted", len(facts))
+    col_m2.metric("Entities Discovered", len(entities))
+    col_m3.metric("Risk Flags", len(risk_flags))
+    col_m4.metric("Search Iterations", 2)
+
+    tab_report, tab_graph, tab_facts, tab_risks, tab_entities, tab_log = st.tabs([
+        "📝 Report", "🕸️ Identity Graph", "📋 Facts", "⚠️ Risks", "👥 Entities", "📋 Log"
+    ])
+
+    with tab_report:
+        st.markdown(DEMO_REPORT)
+
+    with tab_graph:
+        st.info("Identity graph is generated only during live investigations. Use the Next.js UI at localhost:3000 for the interactive React Flow graph.")
+
+    with tab_facts:
+        for f in facts:
+            confidence_color = "🟢" if f.confidence >= 0.7 else "🟡" if f.confidence >= 0.4 else "🔴"
+            st.markdown(
+                f"{confidence_color} **{f.subject}** {f.predicate} **{f.object}** "
+                f"— _{f.category.value}_ ({f.confidence:.0%})"
+            )
+
+    with tab_risks:
+        sorted_risks = sorted(risk_flags, key=lambda r: r.severity.value, reverse=True)
+        for r in sorted_risks:
+            severity_icon = {1: "ℹ️", 2: "⚠️", 3: "🟠", 4: "🔴", 5: "🚨"}.get(r.severity.value, "⚠️")
+            st.markdown(
+                f"{severity_icon} **[{r.severity.value}/5 — {r.category.value}]** {r.description}"
+            )
+            if r.recommendation:
+                st.caption(f"→ {r.recommendation}")
+
+    with tab_entities:
+        for e in entities:
+            type_icon = {
+                "person": "👤", "organization": "🏢",
+                "event": "📅", "filing": "📄", "location": "📍"
+            }.get(e.entity_type.value, "❓")
+            st.markdown(f"{type_icon} **{e.name}** ({e.entity_type.value}) — {e.description}")
+
+    with tab_log:
+        for line in DEMO_EXECUTION_LOG:
+            st.text(line)
+
+    st.stop()
 
 # --- Execution ---
 if run_btn:

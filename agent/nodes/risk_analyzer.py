@@ -10,9 +10,9 @@ from datetime import datetime
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
-from langchain_core.messages import HumanMessage
 
 from config.settings import settings
+from agent.llm_retry import invoke_with_retry
 from agent.state import (
     AgentState,
     RiskFlag,
@@ -30,26 +30,6 @@ RISK_CATEGORY_MAP = {
     "legal": RiskCategory.LEGAL,
     "inconsistency": RiskCategory.INCONSISTENCY,
 }
-
-
-def _get_llm():
-    """Get the LLM for risk analysis, with Groq fallback."""
-    try:
-        llm = ChatGoogleGenerativeAI(
-            model=settings.gemini_model,
-            google_api_key=settings.google_api_key,
-            temperature=0.2,
-        )
-        # Quick test to see if Gemini is available
-        return llm, "gemini"
-    except Exception:
-        pass
-
-    return ChatGroq(
-        model=settings.groq_model,
-        api_key=settings.groq_api_key,
-        temperature=0.2,
-    ), "groq"
 
 
 def risk_analyzer(state: AgentState) -> dict:
@@ -93,7 +73,7 @@ def risk_analyzer(state: AgentState) -> dict:
     for attempt, (llm, model_name) in enumerate(_get_llm_candidates()):
         try:
             model_used = model_name
-            response = llm.invoke([HumanMessage(content=prompt)])
+            response = invoke_with_retry(llm, prompt, label=f"RiskAnalyzer/{model_name}")
             content = response.content
 
             # Parse JSON
