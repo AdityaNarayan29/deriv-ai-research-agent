@@ -10,7 +10,7 @@ interface Props {
 }
 
 const metrics = [
-  { key: "facts", label: "Facts Extracted", color: "text-indigo-400" },
+  { key: "facts", label: "Facts Extracted", color: "text-orange-400" },
   { key: "entities", label: "Entities Discovered", color: "text-amber-400" },
   { key: "risks", label: "Risk Flags", color: "text-red-400" },
   { key: "iteration", label: "Search Iterations", color: "text-emerald-400" },
@@ -30,14 +30,14 @@ export function MetricsCards({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
       {metrics.map((m) => (
         <Card key={m.key} className="border-white/10 bg-white/5">
-          <CardContent className="py-3 text-center">
-            <div className={`text-3xl font-bold ${m.color}`}>
+          <CardContent className="py-2 text-center sm:py-3">
+            <div className={`text-2xl font-bold sm:text-3xl ${m.color}`}>
               {values[m.key]}
             </div>
-            <div className="mt-1 text-xs text-slate-400">{m.label}</div>
+            <div className="mt-0.5 text-[10px] text-neutral-500 sm:mt-1 sm:text-xs">{m.label}</div>
           </CardContent>
         </Card>
       ))}

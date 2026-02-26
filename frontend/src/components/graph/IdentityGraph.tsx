@@ -94,7 +94,7 @@ export function IdentityGraph({ targetName, entities, facts }: Props) {
 
   if (!entities.length && !facts.length) {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 p-8 text-center text-slate-400">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-center text-sm text-neutral-400 sm:p-8">
         No graph data available.
       </div>
     );
@@ -102,48 +102,48 @@ export function IdentityGraph({ targetName, entities, facts }: Props) {
 
   return (
     <div className="relative overflow-hidden rounded-lg border border-white/10">
-      {/* Legend */}
-      <div className="absolute left-3 top-3 z-10 rounded-lg border border-white/10 bg-slate-900/90 p-3 text-xs backdrop-blur-sm">
-        <p className="mb-2 font-semibold text-slate-200">Node Types</p>
+      {/* Legend — hidden on very small screens, compact on mobile */}
+      <div className="absolute left-2 top-2 z-10 hidden rounded-lg border border-white/10 bg-neutral-950/90 p-2 text-[9px] backdrop-blur-sm sm:block sm:left-3 sm:top-3 sm:p-3 sm:text-xs">
+        <p className="mb-1.5 font-semibold text-neutral-200 sm:mb-2">Node Types</p>
         {Object.entries(ENTITY_CONFIG).map(([type, config]) => (
-          <div key={type} className="flex items-center gap-2 py-0.5">
+          <div key={type} className="flex items-center gap-1.5 py-0.5 sm:gap-2">
             <div
-              className="h-3 w-3 rounded-full"
+              className="h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3"
               style={{ backgroundColor: config.color }}
             />
-            <span className="text-slate-400">{config.label}</span>
+            <span className="text-neutral-400">{config.label}</span>
           </div>
         ))}
-        <div className="flex items-center gap-2 py-0.5">
-          <div className="h-3 w-3 rounded-full bg-red-500 ring-1 ring-amber-400" />
-          <span className="text-slate-400">Target</span>
+        <div className="flex items-center gap-1.5 py-0.5 sm:gap-2">
+          <div className="h-2.5 w-2.5 rounded-full bg-red-500 ring-1 ring-amber-400 sm:h-3 sm:w-3" />
+          <span className="text-neutral-400">Target</span>
         </div>
-        <div className="mt-2 border-t border-white/10 pt-2">
-          <p className="mb-1 font-semibold text-slate-200">Edge Confidence</p>
-          <div className="flex items-center gap-2 py-0.5">
-            <div className="h-0.5 w-4 rounded bg-emerald-500" />
-            <span className="text-slate-400">High</span>
+        <div className="mt-1.5 border-t border-white/10 pt-1.5 sm:mt-2 sm:pt-2">
+          <p className="mb-1 font-semibold text-neutral-200">Edge Confidence</p>
+          <div className="flex items-center gap-1.5 py-0.5 sm:gap-2">
+            <div className="h-0.5 w-3 rounded bg-emerald-500 sm:w-4" />
+            <span className="text-neutral-400">High</span>
           </div>
-          <div className="flex items-center gap-2 py-0.5">
-            <div className="h-0.5 w-4 rounded bg-yellow-500" />
-            <span className="text-slate-400">Medium</span>
+          <div className="flex items-center gap-1.5 py-0.5 sm:gap-2">
+            <div className="h-0.5 w-3 rounded bg-yellow-500 sm:w-4" />
+            <span className="text-neutral-400">Medium</span>
           </div>
-          <div className="flex items-center gap-2 py-0.5">
-            <div className="h-0.5 w-4 rounded bg-red-500" />
-            <span className="text-slate-400">Low</span>
+          <div className="flex items-center gap-1.5 py-0.5 sm:gap-2">
+            <div className="h-0.5 w-3 rounded bg-red-500 sm:w-4" />
+            <span className="text-neutral-400">Low</span>
           </div>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="absolute right-3 top-3 z-10 rounded-lg border border-white/10 bg-slate-900/90 px-3 py-2 text-xs backdrop-blur-sm">
-        <p className="font-semibold text-slate-200">{targetName}</p>
-        <p className="text-slate-400">{nodes.length} nodes</p>
-        <p className="text-slate-400">{edges.length} connections</p>
-        <p className="text-slate-400">{facts.length} facts</p>
+      <div className="absolute right-2 top-2 z-10 rounded-lg border border-orange-500/20 bg-neutral-950/90 px-2 py-1.5 text-[9px] backdrop-blur-sm sm:right-3 sm:top-3 sm:px-3 sm:py-2 sm:text-xs">
+        <p className="font-semibold text-orange-400">{targetName}</p>
+        <p className="text-neutral-400">{nodes.length} nodes</p>
+        <p className="text-neutral-400">{edges.length} connections</p>
+        <p className="text-neutral-400">{facts.length} facts</p>
       </div>
 
-      <div style={{ height: 700 }}>
+      <div className="h-[350px] sm:h-[500px] md:h-[600px] lg:h-[650px]">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -153,23 +153,23 @@ export function IdentityGraph({ targetName, entities, facts }: Props) {
           onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           fitView
-          minZoom={0.3}
+          fitViewOptions={{ padding: 0.3 }}
+          minZoom={0.2}
           maxZoom={2}
           proOptions={{ hideAttribution: true }}
         >
-          <Background color="#1e293b" gap={20} />
-          <Controls
-            className="rounded-lg border border-white/10 bg-slate-900/90"
-            showInteractive={false}
-          />
+          <Background color="#1a1a1a" gap={20} />
+          <Controls showInteractive={false} />
           <MiniMap
             nodeColor={(node) => {
               if (node.data?.isTarget) return "#ef4444";
               return (node.data?.color as string) || "#64748b";
             }}
-            maskColor="rgba(15, 23, 42, 0.8)"
-            className="rounded-lg border border-white/10"
-            style={{ backgroundColor: "#0f172a" }}
+            nodeStrokeWidth={0}
+            nodeBorderRadius={50}
+            maskColor="rgba(10, 10, 10, 0.7)"
+            className="hidden rounded-lg border border-white/10 sm:block"
+            style={{ backgroundColor: "#141414" }}
           />
         </ReactFlow>
       </div>

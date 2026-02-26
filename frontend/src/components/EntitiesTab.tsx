@@ -11,45 +11,45 @@ interface Props {
 export function EntitiesTab({ entities }: Props) {
   if (!entities.length) {
     return (
-      <div className="rounded-lg border border-white/10 bg-white/5 p-8 text-center text-slate-400">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-center text-sm text-neutral-400 sm:p-8">
         No entities discovered.
       </div>
     );
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
       {entities.map((entity) => {
         const config = ENTITY_CONFIG[entity.entity_type];
         return (
           <div
             key={entity.id}
-            className="rounded-lg border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/[.07]"
+            className="rounded-lg border border-white/10 bg-white/5 p-3 transition-colors hover:bg-white/[.07] sm:p-4"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10"
                 style={{ backgroundColor: `${config?.color || "#64748b"}20` }}
               >
                 <div
-                  className="h-4 w-4 rounded-full"
+                  className="h-3 w-3 rounded-full sm:h-4 sm:w-4"
                   style={{ backgroundColor: config?.color || "#64748b" }}
                 />
               </div>
               <div className="min-w-0">
-                <p className="truncate font-semibold text-white">
+                <p className="truncate text-sm font-semibold text-white">
                   {entity.name}
                 </p>
                 <Badge
                   variant="secondary"
-                  className="mt-1 bg-white/10 text-xs text-slate-300"
+                  className="mt-0.5 bg-white/10 text-[10px] text-neutral-300 sm:mt-1 sm:text-xs"
                 >
                   {config?.label || entity.entity_type}
                 </Badge>
               </div>
             </div>
             {entity.description && (
-              <p className="mt-3 text-xs text-slate-400 line-clamp-2">
+              <p className="mt-2 text-[10px] text-neutral-400 line-clamp-2 sm:mt-3 sm:text-xs">
                 {entity.description}
               </p>
             )}

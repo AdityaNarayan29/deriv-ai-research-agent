@@ -11,16 +11,15 @@ export function useGraphAnimations(nodeCount: number, edgeCount: number) {
     const timer = requestAnimationFrame(() => {
       const tl = gsap.timeline();
 
-      // 1. Nodes: staggered scale + fade in
+      // 1. Nodes: fade in only — no scale transform (breaks React Flow handle positioning)
       tl.fromTo(
         ".react-flow__node",
-        { opacity: 0, scale: 0 },
+        { opacity: 0 },
         {
           opacity: 1,
-          scale: 1,
           duration: 0.4,
           stagger: 0.06,
-          ease: "back.out(1.4)",
+          ease: "power2.out",
         }
       );
 

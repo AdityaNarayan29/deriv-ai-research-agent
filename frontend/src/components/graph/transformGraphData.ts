@@ -20,15 +20,65 @@ export interface GraphEdgeData extends Record<string, unknown> {
   factCount: number;
 }
 
-/** Fuzzy match a text string against known entity names. */
+const STOP_WORDS = new Set([
+  "the", "of", "and", "for", "in", "a", "an",
+  "inc", "corp", "llc", "ltd", "co", "plc", "sa", "ag", "gmbh", "na",
+]);
+
+/** Strip corporate suffixes, punctuation, stop words for comparison. */
+function normalize(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[,.\-'"()]/g, " ")
+    .split(/\s+/)
+    .filter((t) => t.length > 0 && !STOP_WORDS.has(t))
+    .join(" ");
+}
+
+/** Check if `short` is an acronym of `long` (e.g. SEC -> Securities and Exchange Commission). */
+function isAcronymOf(short: string, long: string): boolean {
+  if (short.length < 2 || short.length > 6) return false;
+  const words = long.split(/\s+/).filter((w) => !STOP_WORDS.has(w.toLowerCase()));
+  if (words.length < 2) return false;
+  const initials = words.map((w) => w[0]).join("").toLowerCase();
+  return short.toLowerCase() === initials;
+}
+
+/**
+ * Match text against known entity names with multi-strategy pipeline:
+ * 1. Exact case-insensitive
+ * 2. Normalized match (strip suffixes/stop words)
+ * 3. Acronym match (SEC <-> Securities and Exchange Commission)
+ * 4. Bidirectional substring (min 4 chars)
+ */
 function fuzzyMatch(text: string, knownNames: Map<string, string>): string | null {
   const lower = text.toLowerCase().trim();
-  // Exact match
+
+  // 1. Exact match
   if (knownNames.has(lower)) return knownNames.get(lower)!;
-  // Substring match
+
+  const textNorm = normalize(text);
+
+  // 2. Normalized match
   for (const [known, canonical] of knownNames) {
-    if (known.includes(lower) || lower.includes(known)) return canonical;
+    if (textNorm && normalize(known) === textNorm) return canonical;
   }
+
+  // 3. Acronym match
+  for (const [known, canonical] of knownNames) {
+    if (isAcronymOf(lower, known) || isAcronymOf(known, lower)) return canonical;
+  }
+
+  // 4. Bidirectional substring (min 4 chars to avoid false positives)
+  if (lower.length >= 4) {
+    for (const [known, canonical] of knownNames) {
+      if (known.length >= 4 && (known.includes(lower) || lower.includes(known))) {
+        return canonical;
+      }
+    }
+  }
+
   return null;
 }
 
@@ -126,20 +176,20 @@ export function transformGraphData(
       source,
       target,
       type: "default",
-      animated: value.maxConf >= 0.8,
+      animated: value.maxConf >= 0.9,
       style: {
         stroke: getConfidenceColor(value.maxConf),
-        strokeWidth: Math.max(1.5, value.maxConf * 3),
+        strokeWidth: Math.max(1.5, value.maxConf * 2.5),
       },
       label,
       labelStyle: {
-        fill: "#94a3b8",
+        fill: "#a3a3a3",
         fontSize: 10,
         fontWeight: 500,
       },
       labelBgStyle: {
-        fill: "#0f172a",
-        fillOpacity: 0.85,
+        fill: "#0a0a0a",
+        fillOpacity: 0.9,
       },
       labelBgPadding: [6, 3] as [number, number],
       data: {
@@ -155,6 +205,11 @@ export function transformGraphData(
   return applyLayout(nodes, edges);
 }
 
+// Node bounding box = the circle only (labels hang below via absolute positioning).
+// These MUST match the SIZE constants in TargetNode.tsx and EntityNode.tsx.
+const TARGET_SIZE = 56;
+const ENTITY_SIZE = 40;
+
 function applyLayout(
   nodes: Node<GraphNodeData>[],
   edges: Edge<GraphEdgeData>[]
@@ -163,16 +218,15 @@ function applyLayout(
   g.setDefaultEdgeLabel(() => ({}));
   g.setGraph({
     rankdir: "TB",
-    nodesep: 80,
-    ranksep: 120,
+    nodesep: 100,
+    ranksep: 130,
     marginx: 40,
     marginy: 40,
   });
 
   for (const node of nodes) {
-    const w = node.data.isTarget ? 180 : 150;
-    const h = node.data.isTarget ? 80 : 60;
-    g.setNode(node.id, { width: w, height: h });
+    const s = node.data.isTarget ? TARGET_SIZE : ENTITY_SIZE;
+    g.setNode(node.id, { width: s, height: s });
   }
 
   for (const edge of edges) {
@@ -183,11 +237,12 @@ function applyLayout(
 
   const layoutNodes = nodes.map((node) => {
     const pos = g.node(node.id);
+    const s = node.data.isTarget ? TARGET_SIZE : ENTITY_SIZE;
     return {
       ...node,
       position: {
-        x: pos.x - (node.data.isTarget ? 90 : 75),
-        y: pos.y - (node.data.isTarget ? 40 : 30),
+        x: pos.x - s / 2,
+        y: pos.y - s / 2,
       },
     };
   });
