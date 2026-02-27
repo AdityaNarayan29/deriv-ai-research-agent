@@ -1,0 +1,540 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "name": "Timothy Overturf",
+      "entity_type": "target",
+      "context": "CEO of Sisu Capital",
+      "fact_count": 14,
+      "id": "Timothy Overturf"
+    },
+    {
+      "name": "Sisu Capital",
+      "entity_type": "organization",
+      "description": "Investment advisory firm (CRD# 169444); managed ~$51.7M for 42 clients; certificate revoked by CA DFPI",
+      "fact_count": 17,
+      "investigated": true,
+      "id": "Sisu Capital"
+    },
+    {
+      "name": "Hansueli Overturf",
+      "entity_type": "person",
+      "description": "Father of Timothy; co-defendant in SEC case; CRD# 4138916; FINRA-suspended; resides in Switzerland",
+      "fact_count": 12,
+      "investigated": true,
+      "id": "Hansueli Overturf"
+    },
+    {
+      "name": "SEC",
+      "entity_type": "organization",
+      "description": "U.S. Securities and Exchange Commission; filed civil fraud complaint LR-25807 on Aug 1, 2023",
+      "fact_count": 5,
+      "investigated": true,
+      "id": "SEC"
+    },
+    {
+      "name": "FINRA",
+      "entity_type": "organization",
+      "description": "Financial Industry Regulatory Authority; fined and suspended Hansueli Overturf in 2011",
+      "fact_count": 4,
+      "investigated": true,
+      "id": "FINRA"
+    },
+    {
+      "name": "California DFPI",
+      "entity_type": "organization",
+      "description": "CA Dept of Financial Protection & Innovation; revoked Sisu Capital certificate; multiple actions against Overturf Financial Services",
+      "fact_count": 3,
+      "investigated": true,
+      "id": "California DFPI"
+    },
+    {
+      "name": "Overturf Financial Services",
+      "entity_type": "organization",
+      "description": "Hans Overturf's prior investment advisory firm; offices in Mill Valley, Arcata, SF; subject to DFPI enforcement",
+      "fact_count": 3,
+      "investigated": true,
+      "id": "Overturf Financial Services"
+    },
+    {
+      "name": "Joseppi's LLC",
+      "entity_type": "organization",
+      "description": "Business entity formed by Overturf and Ostini to acquire Arcata Theatre Lounge; found guilty of NLRB violations",
+      "fact_count": 4,
+      "investigated": true,
+      "id": "Joseppi's LLC"
+    },
+    {
+      "name": "Arcata Theatre Lounge",
+      "entity_type": "organization",
+      "description": "Historic Art Deco entertainment venue in Arcata, CA; DBA of Joseppi's LLC; purchased 2019",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Arcata Theatre Lounge"
+    },
+    {
+      "name": "Joseph Ostini",
+      "entity_type": "person",
+      "description": "Business partner of Timothy Overturf; co-purchased Arcata Theatre Lounge via Joseppi's LLC in 2019",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Joseph Ostini"
+    },
+    {
+      "name": "Redwood Capital Bancorp",
+      "entity_type": "organization",
+      "description": "Community bank holding company (OTCQB: RWCB) in Eureka, CA; stock used in unauthorized trading scheme",
+      "fact_count": 4,
+      "investigated": true,
+      "id": "Redwood Capital Bancorp"
+    },
+    {
+      "name": "Noir Execution Inc",
+      "entity_type": "organization",
+      "description": "California corporation incorporated ~Sept 2020; Timothy Overturf listed as President",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Noir Execution Inc"
+    },
+    {
+      "name": "Morgan Stanley",
+      "entity_type": "organization",
+      "description": "Major financial services firm where Hans Overturf was previously employed in Eureka, CA",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Morgan Stanley"
+    },
+    {
+      "name": "Raymond James Financial Services",
+      "entity_type": "organization",
+      "description": "Financial services firm; Hans Overturf operated through their Arcata, CA branch (2003-2008)",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Raymond James Financial Services"
+    },
+    {
+      "name": "NLRB",
+      "entity_type": "organization",
+      "description": "National Labor Relations Board; found unfair labor practices by Joseppi's LLC (Case 20-CA-292430)",
+      "fact_count": 1,
+      "investigated": true,
+      "id": "NLRB"
+    },
+    {
+      "name": "Ninth Circuit Court of Appeals",
+      "entity_type": "organization",
+      "description": "Federal appeals court; enforced NLRB order against Joseppi's LLC in July 2023",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Ninth Circuit Court of Appeals"
+    },
+    {
+      "name": "U.S. District Court, Northern District of California",
+      "entity_type": "organization",
+      "description": "Federal court in San Francisco; venue for SEC v. Sisu Capital (Case 3:23-cv-03855)",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "U.S. District Court, Northern District of California"
+    },
+    {
+      "name": "Judge Jacqueline Scott Corley",
+      "entity_type": "person",
+      "description": "U.S. District Judge presiding over SEC v. Sisu Capital in NDCA",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Judge Jacqueline Scott Corley"
+    },
+    {
+      "name": "Alice Liu Jensen",
+      "entity_type": "person",
+      "description": "SEC staff attorney who led the investigation and serves as trial counsel",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Alice Liu Jensen"
+    },
+    {
+      "name": "KlaymanToskes",
+      "entity_type": "organization",
+      "description": "Securities law firm that announced a separate misconduct investigation into Timothy Overturf",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "KlaymanToskes"
+    },
+    {
+      "name": "Redwood Parks Lodge",
+      "entity_type": "organization",
+      "description": "Fraudulent investment vehicle used by Hans Overturf to defraud elderly couple of $730,000 in 2004",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Redwood Parks Lodge"
+    },
+    {
+      "name": "Humboldt State University",
+      "entity_type": "organization",
+      "description": "University where Hans Overturf graduated Summa Cum Laude in Economics (1999); now Cal Poly Humboldt",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Humboldt State University"
+    },
+    {
+      "name": "Mill Valley, California",
+      "entity_type": "location",
+      "description": "Sisu Capital registered office; Overturf Financial Services headquarters at 20 Sunnyside Ave",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Mill Valley, California"
+    },
+    {
+      "name": "Arcata, California",
+      "entity_type": "location",
+      "description": "Timothy Overturf's operational base; location of Arcata Theatre Lounge; Humboldt County",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Arcata, California"
+    },
+    {
+      "name": "Eureka, California",
+      "entity_type": "location",
+      "description": "Hans Overturf's Morgan Stanley office; Redwood Capital Bank headquarters; Humboldt County seat",
+      "fact_count": 3,
+      "investigated": false,
+      "id": "Eureka, California"
+    },
+    {
+      "name": "SEC v. Sisu Capital (3:23-cv-03855)",
+      "entity_type": "filing",
+      "description": "Federal civil fraud case filed Aug 1, 2023; charges violations of Investment Advisers Act Sections 206(1) & 206(2)",
+      "fact_count": 3,
+      "investigated": true,
+      "id": "SEC v. Sisu Capital (3:23-cv-03855)"
+    }
+  ],
+  "edges": [
+    {
+      "rel_type": "was approximately 18 years old when he founded",
+      "confidence": 0.85,
+      "category": "biographical",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-040",
+      "source": "Timothy Overturf",
+      "target": "Sisu Capital"
+    },
+    {
+      "rel_type": "is registered representative (CRD# 6422933) supervised by",
+      "confidence": 0.98,
+      "category": "regulatory",
+      "source_url": "https://reports.adviserinfo.sec.gov/reports/individual/individual_6422933.pdf",
+      "fact_id": "fact-003",
+      "source": "Timothy Overturf",
+      "target": "FINRA"
+    },
+    {
+      "rel_type": "operated Sisu Capital from",
+      "confidence": 0.85,
+      "category": "biographical",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-009",
+      "source": "Timothy Overturf",
+      "target": "Arcata, California"
+    },
+    {
+      "rel_type": "made unauthorized purchases of thinly-traded stock in",
+      "confidence": 0.93,
+      "category": "financial",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-026",
+      "source": "Timothy Overturf",
+      "target": "Redwood Capital Bancorp"
+    },
+    {
+      "rel_type": "co-purchased in 2019 with Joseph Ostini",
+      "confidence": 0.92,
+      "category": "professional",
+      "source_url": "https://lostcoastoutpost.com/2019/jul/12/ambitious-twentysomethings-buy-arcata-theatre-loun/",
+      "fact_id": "fact-034",
+      "source": "Timothy Overturf",
+      "target": "Arcata Theatre Lounge"
+    },
+    {
+      "rel_type": "is listed as President of",
+      "confidence": 0.82,
+      "category": "professional",
+      "source_url": "https://www.corporationwiki.com/p/393zm0/timothy-silas-prugh-overturf",
+      "fact_id": "fact-038",
+      "source": "Timothy Overturf",
+      "target": "Noir Execution Inc"
+    },
+    {
+      "rel_type": "passed Series 65 exam and registered as adviser representative with",
+      "confidence": 0.95,
+      "category": "regulatory",
+      "source_url": "https://reports.adviserinfo.sec.gov/reports/individual/individual_6422933.pdf",
+      "fact_id": "fact-039",
+      "source": "Timothy Overturf",
+      "target": "California DFPI"
+    },
+    {
+      "rel_type": "is registered investment adviser (CRD# 169444) regulated by",
+      "confidence": 0.98,
+      "category": "regulatory",
+      "source_url": "https://adviserinfo.sec.gov/firm/summary/169444",
+      "fact_id": "fact-002",
+      "source": "Sisu Capital",
+      "target": "FINRA"
+    },
+    {
+      "rel_type": "was headquartered in",
+      "confidence": 0.95,
+      "category": "professional",
+      "source_url": "https://adviserinfo.sec.gov/firm/summary/169444",
+      "fact_id": "fact-008",
+      "source": "Sisu Capital",
+      "target": "Mill Valley, California"
+    },
+    {
+      "rel_type": "operated from registered office in",
+      "confidence": 0.88,
+      "category": "professional",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-006",
+      "source": "Sisu Capital",
+      "target": "Arcata, California"
+    },
+    {
+      "rel_type": "invested clients in unsuitable inverse volatility products via",
+      "confidence": 0.91,
+      "category": "financial",
+      "source_url": "https://www.sec.gov/files/litigation/complaints/2023/comp25807.pdf",
+      "fact_id": "fact-025",
+      "source": "Sisu Capital",
+      "target": "Redwood Capital Bancorp"
+    },
+    {
+      "rel_type": "is assigned case number 3:23-cv-03855 in",
+      "confidence": 0.98,
+      "category": "legal",
+      "source_url": "https://dockets.justia.com/docket/california/candce/3:2023cv03855/416262",
+      "fact_id": "fact-031",
+      "source": "Sisu Capital",
+      "target": "U.S. District Court, Northern District of California"
+    },
+    {
+      "rel_type": "is the father of",
+      "confidence": 0.95,
+      "category": "biographical",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-010",
+      "source": "Hansueli Overturf",
+      "target": "Timothy Overturf"
+    },
+    {
+      "rel_type": "represents himself pro se in",
+      "confidence": 0.88,
+      "category": "legal",
+      "source_url": "https://www.courtlistener.com/docket/67656798/securities-and-exchange-commission-v-sisu-capital-llc/",
+      "fact_id": "fact-033",
+      "source": "Hansueli Overturf",
+      "target": "SEC v. Sisu Capital (3:23-cv-03855)"
+    },
+    {
+      "rel_type": "provided unauthorized investment advice to clients of",
+      "confidence": 0.93,
+      "category": "legal",
+      "source_url": "https://www.sec.gov/files/litigation/complaints/2023/comp25807.pdf",
+      "fact_id": "fact-012",
+      "source": "Hansueli Overturf",
+      "target": "Sisu Capital"
+    },
+    {
+      "rel_type": "is registered representative (CRD# 4138916) regulated by",
+      "confidence": 0.98,
+      "category": "regulatory",
+      "source_url": "https://brokercheck.finra.org/Individual/4138916",
+      "fact_id": "fact-013",
+      "source": "Hansueli Overturf",
+      "target": "FINRA"
+    },
+    {
+      "rel_type": "was previously employed at",
+      "confidence": 0.85,
+      "category": "professional",
+      "source_url": "https://hans-overturf.blogspot.com/p/about-hans-overturf.html",
+      "fact_id": "fact-014",
+      "source": "Hansueli Overturf",
+      "target": "Morgan Stanley"
+    },
+    {
+      "rel_type": "operated through",
+      "confidence": 0.88,
+      "category": "professional",
+      "source_url": "https://brokercheck.finra.org/Individual/4138916",
+      "fact_id": "fact-015",
+      "source": "Hansueli Overturf",
+      "target": "Raymond James Financial Services"
+    },
+    {
+      "rel_type": "founded",
+      "confidence": 0.9,
+      "category": "professional",
+      "source_url": "https://dfpi.ca.gov/enforcement_action/overturf-financial-services-inc/",
+      "fact_id": "fact-016",
+      "source": "Hansueli Overturf",
+      "target": "Overturf Financial Services"
+    },
+    {
+      "rel_type": "graduated from",
+      "confidence": 0.8,
+      "category": "biographical",
+      "source_url": "https://hans-overturf.blogspot.com/p/about-hans-overturf.html",
+      "fact_id": "fact-018",
+      "source": "Hansueli Overturf",
+      "target": "Humboldt State University"
+    },
+    {
+      "rel_type": "formerly operated from offices in",
+      "confidence": 0.82,
+      "category": "biographical",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-019",
+      "source": "Hansueli Overturf",
+      "target": "Eureka, California"
+    },
+    {
+      "rel_type": "was accused in 2004 of bilking $730,000 from elderly patients via",
+      "confidence": 0.87,
+      "category": "legal",
+      "source_url": "https://lostcoastoutpost.com/2023/aug/18/sec-accuses-timothy-overturf-owner-and-ceo-local-i/",
+      "fact_id": "fact-041",
+      "source": "Hansueli Overturf",
+      "target": "Redwood Parks Lodge"
+    },
+    {
+      "rel_type": "alleges $2M+ in excessive advisory fees collected by",
+      "confidence": 0.92,
+      "category": "financial",
+      "source_url": "https://www.sec.gov/files/litigation/complaints/2023/comp25807.pdf",
+      "fact_id": "fact-024",
+      "source": "SEC",
+      "target": "Sisu Capital"
+    },
+    {
+      "rel_type": "charged unauthorized purchase of 2,300+ RWCB shares by",
+      "confidence": 0.91,
+      "category": "financial",
+      "source_url": "https://www.sec.gov/files/litigation/complaints/2023/comp25807.pdf",
+      "fact_id": "fact-028",
+      "source": "SEC",
+      "target": "Timothy Overturf"
+    },
+    {
+      "rel_type": "fined $10,000 and suspended in 2011",
+      "confidence": 0.95,
+      "category": "regulatory",
+      "source_url": "https://brokercheck.finra.org/Individual/4138916",
+      "fact_id": "fact-017",
+      "source": "FINRA",
+      "target": "Hansueli Overturf"
+    },
+    {
+      "rel_type": "summarily revoked investment adviser certificate of",
+      "confidence": 0.96,
+      "category": "regulatory",
+      "source_url": "https://dfpi.ca.gov/enf-s/sisu-capital-llc/",
+      "fact_id": "fact-029",
+      "source": "California DFPI",
+      "target": "Sisu Capital"
+    },
+    {
+      "rel_type": "issued desist and refrain orders against",
+      "confidence": 0.92,
+      "category": "regulatory",
+      "source_url": "https://dfpi.ca.gov/enforcement_action/overturf-financial-services-inc/",
+      "fact_id": "fact-030",
+      "source": "California DFPI",
+      "target": "Overturf Financial Services"
+    },
+    {
+      "rel_type": "was predecessor firm of",
+      "confidence": 0.85,
+      "category": "professional",
+      "source_url": "https://www.sec.gov/files/litigation/complaints/2023/comp25807.pdf",
+      "fact_id": "fact-007",
+      "source": "Overturf Financial Services",
+      "target": "Sisu Capital"
+    },
+    {
+      "rel_type": "operates as DBA for",
+      "confidence": 0.9,
+      "category": "professional",
+      "source_url": "https://lostcoastoutpost.com/2019/jul/12/ambitious-twentysomethings-buy-arcata-theatre-loun/",
+      "fact_id": "fact-035",
+      "source": "Joseppi's LLC",
+      "target": "Arcata Theatre Lounge"
+    },
+    {
+      "rel_type": "is business partner of Timothy Overturf and co-owner of",
+      "confidence": 0.9,
+      "category": "professional",
+      "source_url": "https://lostcoastoutpost.com/2019/jul/12/ambitious-twentysomethings-buy-arcata-theatre-loun/",
+      "fact_id": "fact-044",
+      "source": "Joseph Ostini",
+      "target": "Joseppi's LLC"
+    },
+    {
+      "rel_type": "is a community bank headquartered in",
+      "confidence": 0.9,
+      "category": "professional",
+      "source_url": "https://www.redwoodcapitalbank.com/",
+      "fact_id": "fact-045",
+      "source": "Redwood Capital Bancorp",
+      "target": "Eureka, California"
+    },
+    {
+      "rel_type": "found unfair labor practices (Case 20-CA-292430) against",
+      "confidence": 0.95,
+      "category": "legal",
+      "source_url": "https://www.nlrb.gov/case/20-CA-292430",
+      "fact_id": "fact-036",
+      "source": "NLRB",
+      "target": "Joseppi's LLC"
+    },
+    {
+      "rel_type": "enforced NLRB order against",
+      "confidence": 0.9,
+      "category": "legal",
+      "source_url": "https://lostcoastoutpost.com/2023/jul/25/labor-relations-board-orders-arcata-theatre-lounge/",
+      "fact_id": "fact-037",
+      "source": "Ninth Circuit Court of Appeals",
+      "target": "Joseppi's LLC"
+    },
+    {
+      "rel_type": "presides over",
+      "confidence": 0.95,
+      "category": "legal",
+      "source_url": "https://dockets.justia.com/docket/california/candce/3:2023cv03855/416262",
+      "fact_id": "fact-032",
+      "source": "Judge Jacqueline Scott Corley",
+      "target": "SEC v. Sisu Capital (3:23-cv-03855)"
+    },
+    {
+      "rel_type": "led SEC investigation of",
+      "confidence": 0.9,
+      "category": "legal",
+      "source_url": "https://www.sec.gov/enforcement-litigation/litigation-releases/lr-25807",
+      "fact_id": "fact-042",
+      "source": "Alice Liu Jensen",
+      "target": "Sisu Capital"
+    },
+    {
+      "rel_type": "announced misconduct investigation into",
+      "confidence": 0.88,
+      "category": "legal",
+      "source_url": "https://klaymantoskes.com/broker-investigation/advisor-timothy-overturf/",
+      "fact_id": "fact-043",
+      "source": "KlaymanToskes",
+      "target": "Timothy Overturf"
+    }
+  ]
+}

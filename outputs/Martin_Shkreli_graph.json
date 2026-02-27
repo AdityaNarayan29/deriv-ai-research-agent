@@ -1,0 +1,641 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "name": "Martin Shkreli",
+      "entity_type": "target",
+      "context": "Former CEO of Turing Pharmaceuticals",
+      "fact_count": 66,
+      "id": "Martin Shkreli"
+    },
+    {
+      "name": "MSMB Capital Management LP",
+      "entity_type": "organization",
+      "description": "Hedge fund founded by Martin Shkreli",
+      "fact_count": 9,
+      "investigated": false,
+      "id": "MSMB Capital Management LP"
+    },
+    {
+      "name": "MSMB Healthcare LP",
+      "entity_type": "organization",
+      "description": "Hedge fund founded by Martin Shkreli",
+      "fact_count": 6,
+      "investigated": false,
+      "id": "MSMB Healthcare LP"
+    },
+    {
+      "name": "Elea Capital Management LLC",
+      "entity_type": "organization",
+      "description": "Company founded by Martin Shkreli",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Elea Capital Management LLC"
+    },
+    {
+      "name": "Intrepid Capital Management Inc.",
+      "entity_type": "organization",
+      "description": "Company where Martin Shkreli worked as an analyst",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Intrepid Capital Management Inc."
+    },
+    {
+      "name": "SEC",
+      "entity_type": "organization",
+      "description": "Regulatory agency that charged Martin Shkreli",
+      "fact_count": 5,
+      "investigated": false,
+      "id": "SEC"
+    },
+    {
+      "name": "Retrophin Inc.",
+      "entity_type": "organization",
+      "description": "Company where Martin Shkreli was CEO",
+      "fact_count": 7,
+      "investigated": false,
+      "id": "Retrophin Inc."
+    },
+    {
+      "name": "Turing Pharmaceuticals LLC",
+      "entity_type": "organization",
+      "description": "Company founded by Martin Shkreli",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Turing Pharmaceuticals LLC"
+    },
+    {
+      "name": "Turing Pharmaceuticals AG",
+      "entity_type": "organization",
+      "description": "Company founded by Martin Shkreli",
+      "fact_count": 3,
+      "investigated": false,
+      "id": "Turing Pharmaceuticals AG"
+    },
+    {
+      "name": "Daraprim",
+      "entity_type": "event",
+      "description": "Drug whose price was increased by Martin Shkreli",
+      "fact_count": 4,
+      "investigated": false,
+      "id": "Daraprim"
+    },
+    {
+      "name": "US court",
+      "entity_type": "organization",
+      "description": "Court that banned Martin Shkreli from the pharmaceutical industry",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "US court"
+    },
+    {
+      "name": "Federal Trade Commission",
+      "entity_type": "organization",
+      "description": "Regulatory agency that brought a case against Martin Shkreli",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Federal Trade Commission"
+    },
+    {
+      "name": "Denise Cote",
+      "entity_type": "person",
+      "description": "Judge who imposed a ban on Martin Shkreli",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Denise Cote"
+    },
+    {
+      "name": "New York",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "New York"
+    },
+    {
+      "name": "California",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "California"
+    },
+    {
+      "name": "Illinois",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Illinois"
+    },
+    {
+      "name": "North Carolina",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "North Carolina"
+    },
+    {
+      "name": "Ohio",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Ohio"
+    },
+    {
+      "name": "Pennsylvania",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Pennsylvania"
+    },
+    {
+      "name": "Virginia",
+      "entity_type": "location",
+      "description": "State that joined the Federal Trade Commission's case against Martin Shkreli",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Virginia"
+    },
+    {
+      "name": "Congress",
+      "entity_type": "organization",
+      "description": "Legislative body that Martin Shkreli appeared before",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Congress"
+    },
+    {
+      "name": "Turing Pharmaceuticals",
+      "entity_type": "organization",
+      "description": "Pharmaceutical company",
+      "fact_count": 5,
+      "investigated": false,
+      "id": "Turing Pharmaceuticals"
+    },
+    {
+      "name": "Evan Greebel",
+      "entity_type": "person",
+      "description": "Former partner at Katten Muchin Rosenman LLP",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Evan Greebel"
+    },
+    {
+      "name": "Katten Muchin Rosenman LLP",
+      "entity_type": "organization",
+      "description": "Law firm",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Katten Muchin Rosenman LLP"
+    },
+    {
+      "name": "Law Office of Christopher K. Johnston LLC",
+      "entity_type": "organization",
+      "description": "Law firm",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Law Office of Christopher K. Johnston LLC"
+    },
+    {
+      "name": "Phoenixus AG",
+      "entity_type": "organization",
+      "description": "Pharmaceutical company",
+      "fact_count": 7,
+      "investigated": false,
+      "id": "Phoenixus AG"
+    },
+    {
+      "name": "Thiola",
+      "entity_type": "organization",
+      "description": "Drug",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Thiola"
+    },
+    {
+      "name": "U.S. District Court for the Eastern District of New York",
+      "entity_type": "organization",
+      "description": "Court",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "U.S. District Court for the Eastern District of New York"
+    },
+    {
+      "name": "Federal Bureau of Prisons",
+      "entity_type": "organization",
+      "description": "Regulatory agency",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Federal Bureau of Prisons"
+    },
+    {
+      "name": "FBI",
+      "entity_type": "organization",
+      "description": "Regulatory agency",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "FBI"
+    },
+    {
+      "name": "U.S. Securities and Exchange Commission",
+      "entity_type": "organization",
+      "description": "Regulatory agency",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "U.S. Securities and Exchange Commission"
+    },
+    {
+      "name": "U.S. Probation Office",
+      "entity_type": "organization",
+      "description": "Regulatory agency",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "U.S. Probation Office"
+    },
+    {
+      "name": "Allenwood, Pennsylvania",
+      "entity_type": "location",
+      "description": "Location of federal prison",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Allenwood, Pennsylvania"
+    },
+    {
+      "name": "Queens, New York",
+      "entity_type": "location",
+      "description": "Location of Martin Shkreli's residence",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Queens, New York"
+    },
+    {
+      "name": "Brooklyn, New York",
+      "entity_type": "location",
+      "description": "Location of U.S. District Court",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Brooklyn, New York"
+    },
+    {
+      "name": "Regnum",
+      "entity_type": "organization",
+      "description": "a company with shares acquired by Phoenixus AG",
+      "fact_count": 5,
+      "investigated": false,
+      "id": "Regnum"
+    },
+    {
+      "name": "MSMB Healthcare Management LP",
+      "entity_type": "organization",
+      "description": "a hedge fund co-founded by Martin Shkreli",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "MSMB Healthcare Management LP"
+    },
+    {
+      "name": "Retrophin",
+      "entity_type": "organization",
+      "description": "a company co-founded by Martin Shkreli",
+      "fact_count": 5,
+      "investigated": false,
+      "id": "Retrophin"
+    },
+    {
+      "name": "Lauren Duca",
+      "entity_type": "person",
+      "description": "a writer who was harassed by Martin Shkreli",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Lauren Duca"
+    },
+    {
+      "name": "USAO-EDNY",
+      "entity_type": "organization",
+      "description": "a regulatory agency that charged Martin Shkreli with securities fraud",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "USAO-EDNY"
+    },
+    {
+      "name": "Wu-Tang Clan",
+      "entity_type": "organization",
+      "description": "a music group whose album was purchased by Martin Shkreli",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Wu-Tang Clan"
+    },
+    {
+      "name": "Twitter",
+      "entity_type": "organization",
+      "description": "a social media platform where Martin Shkreli was banned",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Twitter"
+    }
+  ],
+  "edges": [
+    {
+      "rel_type": "co-founded",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "35084aa3",
+      "source": "Martin Shkreli",
+      "target": "MSMB Capital Management LP"
+    },
+    {
+      "rel_type": "served as",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "ffaeef2b",
+      "source": "Martin Shkreli",
+      "target": "MSMB Healthcare LP"
+    },
+    {
+      "rel_type": "founded",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "2f8ce946",
+      "source": "Martin Shkreli",
+      "target": "Elea Capital Management LLC"
+    },
+    {
+      "rel_type": "was a healthcare and technology equity analyst at",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "f1623f85",
+      "source": "Martin Shkreli",
+      "target": "Intrepid Capital Management Inc."
+    },
+    {
+      "rel_type": "charged by",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "5fd58dff",
+      "source": "Martin Shkreli",
+      "target": "SEC"
+    },
+    {
+      "rel_type": "was CEO of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "554de938",
+      "source": "Martin Shkreli",
+      "target": "Retrophin Inc."
+    },
+    {
+      "rel_type": "increased the price of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "5670fcff",
+      "source": "Martin Shkreli",
+      "target": "Daraprim"
+    },
+    {
+      "rel_type": "was banned from the pharmaceutical industry by",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "da338b69",
+      "source": "Martin Shkreli",
+      "target": "US court"
+    },
+    {
+      "rel_type": "founded",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "1f03aa38",
+      "source": "Martin Shkreli",
+      "target": "Turing Pharmaceuticals LLC"
+    },
+    {
+      "rel_type": "founded",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "a488ded0",
+      "source": "Martin Shkreli",
+      "target": "Turing Pharmaceuticals AG"
+    },
+    {
+      "rel_type": "pleaded the fifth before",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "ecc0fc15",
+      "source": "Martin Shkreli",
+      "target": "Congress"
+    },
+    {
+      "rel_type": "is the former CEO of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "fa90b3ca",
+      "source": "Martin Shkreli",
+      "target": "Turing Pharmaceuticals"
+    },
+    {
+      "rel_type": "ran",
+      "confidence": 0.8,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "06a284d5",
+      "source": "Martin Shkreli",
+      "target": "Phoenixus AG"
+    },
+    {
+      "rel_type": "consults for",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "9f419ebe",
+      "source": "Martin Shkreli",
+      "target": "Law Office of Christopher K. Johnston LLC"
+    },
+    {
+      "rel_type": "lived in",
+      "confidence": 1.0,
+      "category": "biographical",
+      "source_url": "",
+      "fact_id": "a1bf2baf",
+      "source": "Martin Shkreli",
+      "target": "Queens, New York"
+    },
+    {
+      "rel_type": "released from",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "c3f38c64",
+      "source": "Martin Shkreli",
+      "target": "Pennsylvania"
+    },
+    {
+      "rel_type": "tweeted about",
+      "confidence": 1.0,
+      "category": "social",
+      "source_url": "",
+      "fact_id": "dd5a3a52",
+      "source": "Martin Shkreli",
+      "target": "Retrophin"
+    },
+    {
+      "rel_type": "was banned from",
+      "confidence": 1.0,
+      "category": "social",
+      "source_url": "",
+      "fact_id": "60e257e2",
+      "source": "Martin Shkreli",
+      "target": "Twitter"
+    },
+    {
+      "rel_type": "purchased",
+      "confidence": 1.0,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "085718a0",
+      "source": "Martin Shkreli",
+      "target": "Wu-Tang Clan"
+    },
+    {
+      "rel_type": "invested in",
+      "confidence": 0.8,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "42cd2f80",
+      "source": "MSMB Capital Management LP",
+      "target": "Retrophin Inc."
+    },
+    {
+      "rel_type": "charged",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "129bfcc7",
+      "source": "SEC",
+      "target": "Martin Shkreli"
+    },
+    {
+      "rel_type": "sued",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "bf37b6a4",
+      "source": "Retrophin Inc.",
+      "target": "Martin Shkreli"
+    },
+    {
+      "rel_type": "raised price of",
+      "confidence": 1.0,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "44cf2135",
+      "source": "Retrophin Inc.",
+      "target": "Thiola"
+    },
+    {
+      "rel_type": "changed name to",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "a357f537",
+      "source": "Turing Pharmaceuticals AG",
+      "target": "Phoenixus AG"
+    },
+    {
+      "rel_type": "upheld the ban on",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "e8acc98e",
+      "source": "US court",
+      "target": "Martin Shkreli"
+    },
+    {
+      "rel_type": "brought a case against",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "185b187a",
+      "source": "Federal Trade Commission",
+      "target": "Martin Shkreli"
+    },
+    {
+      "rel_type": "joined by",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "155e905a",
+      "source": "Federal Trade Commission",
+      "target": "New York"
+    },
+    {
+      "rel_type": "imposed a ban on",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "239d4e9d",
+      "source": "Denise Cote",
+      "target": "Martin Shkreli"
+    },
+    {
+      "rel_type": "hiked the price of",
+      "confidence": 1.0,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "036cccbd",
+      "source": "Turing Pharmaceuticals",
+      "target": "Daraprim"
+    },
+    {
+      "rel_type": "served as",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "1bcbc8e7",
+      "source": "Evan Greebel",
+      "target": "Retrophin Inc."
+    },
+    {
+      "rel_type": "owns",
+      "confidence": 1.0,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "d27ca25e",
+      "source": "Phoenixus AG",
+      "target": "Regnum"
+    },
+    {
+      "rel_type": "wrote about",
+      "confidence": 1.0,
+      "category": "social",
+      "source_url": "",
+      "fact_id": "515292da",
+      "source": "Lauren Duca",
+      "target": "Martin Shkreli"
+    },
+    {
+      "rel_type": "charged",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "2ce20b69",
+      "source": "USAO-EDNY",
+      "target": "Martin Shkreli"
+    }
+  ]
+}

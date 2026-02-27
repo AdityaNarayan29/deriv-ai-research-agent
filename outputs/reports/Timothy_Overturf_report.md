@@ -1,30 +1,63 @@
 # Due Diligence Report: Timothy Overturf
-*Generated: 2026-02-26 00:03:50*
+*Context: CEO of Sisu Capital*
 
-## Executive Summary
-This due diligence report on Timothy Overturf, CEO of Sisu Capital, presents the findings of a comprehensive investigation. Unfortunately, due to the limited scope of the investigation, with only one search iteration, no facts were extracted, no entities were discovered, and no risk flags were identified. As a result, this report is unable to provide a thorough risk assessment or detailed analysis of the subject. The overall confidence in the investigation findings is low, and further investigation is recommended to gather more information.
+## Facts Discovered
 
-## Subject Profile
-No verified biographical or professional details of Timothy Overturf were obtained during the investigation. Typically, a subject profile would include information such as education, work history, and notable achievements. However, due to the lack of extracted facts, this section remains incomplete.
+- Timothy Overturf is CEO of Sisu Capital, LLC (confidence: 100%)
+- SEC charged Timothy Overturf (confidence: 100%)
+- SEC charged Sisu Capital, LLC (confidence: 100%)
+- Hansueli Overturf is father of Timothy Overturf (confidence: 100%)
+- Hansueli Overturf aided and abetted Timothy Overturf (confidence: 100%)
+- Hansueli Overturf aided and abetted Sisu Capital, LLC (confidence: 100%)
+- Sisu Capital, LLC breached fiduciary duties to clients (confidence: 100%)
+- Timothy Overturf breached fiduciary duties to clients (confidence: 100%)
+- Sisu Capital, LLC invested client funds in thinly-traded bank stock (confidence: 100%)
+- Timothy Overturf invested client funds in thinly-traded bank stock (confidence: 100%)
+- Hansueli Overturf traded in Sisu Capital clients' accounts (confidence: 100%)
+- Hansueli Overturf provided investment advice to Sisu Capital clients (confidence: 100%)
+- SEC seeks permanent injunctions (confidence: 100%)
+- SEC seeks disgorgement with prejudgment interest (confidence: 100%)
+- SEC seeks civil penalties (confidence: 100%)
+- Sisu Capital, LLC generated $2 million in advisory fees (confidence: 100%)
+- Timothy Overturf generated $2 million in advisory fees (confidence: 100%)
+- Hansueli Overturf recommended unsuitable, complex financial instrument (confidence: 100%)
+- Timothy Overturf purchased unsuitable, complex financial instrument (confidence: 100%)
+- Sisu Capital, LLC held unsuitable, complex financial instrument for months (confidence: 100%)
+- SEC investigated Sisu Capital, LLC (confidence: 100%)
+- SEC investigated Timothy Overturf (confidence: 100%)
+- Alice Liu Jensen conducted investigation Sisu Capital, LLC (confidence: 100%)
+- Rahul Kolhatkar supervised investigation Sisu Capital, LLC (confidence: 100%)
+- Joseph Sansone supervised investigation Sisu Capital, LLC (confidence: 100%)
+- Sisu Capital, LLC based in Arcata, California (confidence: 100%)
+- Timothy Overturf based in Arcata, California (confidence: 100%)
+- Hansueli Overturf suspended by State of California (confidence: 100%)
+- Sisu Capital, LLC violated Sections 206(1) and 206(2) of the Investment Advisers Act of 1940 (confidence: 100%)
+- Timothy Overturf violated Sections 206(1) and 206(2) of the Investment Advisers Act of 1940 (confidence: 100%)
 
-## Organizational Connections
-No connected entities, relationships, or significance were discovered during the investigation. A comprehensive map of organizational connections would normally include information about the subject's professional network, business affiliations, and other relevant relationships. Unfortunately, this information is not available in this case.
+## Risk Flags
 
-## Risk Assessment
-No risk flags were identified during the investigation. A detailed analysis of each risk flag, ranked by severity, would typically include evidence citations and confidence levels. However, due to the absence of risk flags, this section remains empty.
+- **[5/5]** Regulatory risk due to SEC charges and violations of the Investment Advisers Act of 1940
+- **[4/5]** Reputational risk due to lawsuits and controversies surrounding Sisu Capital and Timothy Overturf
+- **[4/5]** Financial risk due to suspicious transactions and potential conflicts of interest
+- **[4/5]** Potential undue influence by Hansueli Overturf on Sisu Capital's investment decisions
+- **[3/5]** Inconsistency in Hansueli Overturf's role and involvement with Sisu Capital
 
-## Key Findings
-No non-obvious discoveries, patterns, or insights were obtained during the investigation. This section would normally highlight any unusual or noteworthy findings that may not be immediately apparent. Unfortunately, the lack of extracted facts and discovered entities limits the ability to identify key findings.
+## Entities
 
-## Confidence Assessment
-The overall confidence in the investigation findings is low. The limited scope of the investigation, with only one search iteration, resulted in no extracted facts, no discovered entities, and no identified risk flags. This lack of information creates significant gaps in coverage and areas needing further investigation. To increase confidence in the findings, additional search iterations and a more comprehensive investigation are necessary.
-
-## Recommendations
-Based on the findings, the following actionable next steps are recommended:
-1. Conduct additional search iterations to gather more information about Timothy Overturf and Sisu Capital.
-2. Utilize alternative sources and investigative methods to discover connected entities and relationships.
-3. Perform a more thorough risk assessment to identify potential risk flags and analyze their severity.
-4. Gather verified biographical and professional details of the subject to complete the subject profile.
-5. Consider expanding the investigation to include other relevant areas, such as financial analysis or industry research.
-
-It is essential to note that the limitations of this investigation, including the limited scope and lack of extracted facts, may impact the accuracy and completeness of the findings. A more comprehensive investigation is necessary to provide a thorough understanding of Timothy Overturf and Sisu Capital.
+- Timothy Overturf (person)
+- Sisu Capital, LLC (organization)
+- Hansueli Overturf (person)
+- SEC (organization)
+- State of California (location)
+- Arcata, California (location)
+- San Francisco (location)
+- Alice Liu Jensen (person)
+- Rahul Kolhatkar (person)
+- Joseph Sansone (person)
+- Jacqueline Scott Corley (person)
+- Lisa J. Cisneros (person)
+- John Han (person)
+- Alice Jensen (person)
+- John Pierce (person)
+- SEC v. Sisu Capital, LLC, et al. (filing)
+- Investment Advisers Act of 1940 (filing)

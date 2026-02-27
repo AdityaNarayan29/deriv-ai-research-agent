@@ -1,0 +1,644 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "name": "Elizabeth Holmes",
+      "entity_type": "target",
+      "context": "Founder of Theranos",
+      "fact_count": 27,
+      "id": "Elizabeth Holmes"
+    },
+    {
+      "name": "Sunny Balwani",
+      "entity_type": "person",
+      "description": "President and COO of Theranos, romantic partner of Elizabeth Holmes",
+      "fact_count": 12,
+      "investigated": false,
+      "id": "Sunny Balwani"
+    },
+    {
+      "name": "Theranos",
+      "entity_type": "organization",
+      "description": "Biotech company founded by Elizabeth Holmes",
+      "fact_count": 31,
+      "investigated": false,
+      "id": "Theranos"
+    },
+    {
+      "name": "Billy Evans",
+      "entity_type": "person",
+      "description": "Partner of Elizabeth Holmes, founder of Haemanthus",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Billy Evans"
+    },
+    {
+      "name": "Haemanthus",
+      "entity_type": "organization",
+      "description": "Health tech startup founded by Billy Evans",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Haemanthus"
+    },
+    {
+      "name": "FDA",
+      "entity_type": "organization",
+      "description": "Regulatory agency that inspected Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "FDA"
+    },
+    {
+      "name": "Centers for Medicare and Medicaid Services (CMS)",
+      "entity_type": "organization",
+      "description": "Regulatory agency that sent a letter to Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Centers for Medicare and Medicaid Services (CMS)"
+    },
+    {
+      "name": "Walgreens",
+      "entity_type": "organization",
+      "description": "Partner of Theranos that pulled back from the partnership",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "Walgreens"
+    },
+    {
+      "name": "Safeway",
+      "entity_type": "organization",
+      "description": "Investor in Theranos that dissolved its relationship with the company",
+      "fact_count": 3,
+      "investigated": false,
+      "id": "Safeway"
+    },
+    {
+      "name": "Henry Kissinger",
+      "entity_type": "person",
+      "description": "Former director of Theranos",
+      "fact_count": 6,
+      "investigated": false,
+      "id": "Henry Kissinger"
+    },
+    {
+      "name": "George Shultz",
+      "entity_type": "person",
+      "description": "Former director of Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "George Shultz"
+    },
+    {
+      "name": "The Wall Street Journal",
+      "entity_type": "organization",
+      "description": "News organization that hosted a conference where Elizabeth Holmes was interviewed",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "The Wall Street Journal"
+    },
+    {
+      "name": "Invicta",
+      "entity_type": "person",
+      "description": "Child of Elizabeth Holmes",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Invicta"
+    },
+    {
+      "name": "The Dropout",
+      "entity_type": "event",
+      "description": "Hulu series that tells the story of Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "The Dropout"
+    },
+    {
+      "name": "Bad Blood",
+      "entity_type": "event",
+      "description": "Book that tells the story of Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Bad Blood"
+    },
+    {
+      "name": "The Inventor: Out for Blood in Silicon Valley",
+      "entity_type": "event",
+      "description": "HBO documentary that tells the story of Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "The Inventor: Out for Blood in Silicon Valley"
+    },
+    {
+      "name": "CNBC",
+      "entity_type": "organization",
+      "description": "News organization that interviewed Elizabeth Holmes",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "CNBC"
+    },
+    {
+      "name": "Mad Money",
+      "entity_type": "event",
+      "description": "CNBC show that interviewed Elizabeth Holmes",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Mad Money"
+    },
+    {
+      "name": "Cleveland Clinic",
+      "entity_type": "organization",
+      "description": "Host of a conference where Elizabeth Holmes spoke",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Cleveland Clinic"
+    },
+    {
+      "name": "WSJD Live",
+      "entity_type": "event",
+      "description": "Conference where Elizabeth Holmes spoke",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "WSJD Live"
+    },
+    {
+      "name": "Nikki Ritcher",
+      "entity_type": "person",
+      "description": "Photographer who took a photo of Elizabeth Holmes",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Nikki Ritcher"
+    },
+    {
+      "name": "Philip Pacheco",
+      "entity_type": "person",
+      "description": "Getty Images photographer who took a photo of Elizabeth Holmes",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Philip Pacheco"
+    },
+    {
+      "name": "Thom Jensen",
+      "entity_type": "person",
+      "description": "NBC Bay Area reporter who reported on Billy Evans' startup",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Thom Jensen"
+    },
+    {
+      "name": "NBC Bay Area",
+      "entity_type": "organization",
+      "description": "News organization that reported on Billy Evans' startup",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "NBC Bay Area"
+    },
+    {
+      "name": "Eagle Hill Consulting",
+      "entity_type": "organization",
+      "description": "Company that wrote about the lessons from Theranos' toxic workplace culture",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Eagle Hill Consulting"
+    },
+    {
+      "name": "Boston College",
+      "entity_type": "organization",
+      "description": "University that hosted a forum on business ethics where a Theranos whistleblower spoke",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Boston College"
+    },
+    {
+      "name": "Shultz",
+      "entity_type": "person",
+      "description": "Theranos whistleblower who spoke at Boston College",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Shultz"
+    },
+    {
+      "name": "University of Miami",
+      "entity_type": "organization",
+      "description": "University that wrote about the dark side of leadership highlighted by the Theranos trial",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "University of Miami"
+    },
+    {
+      "name": "Neider",
+      "entity_type": "person",
+      "description": "Professor at University of Miami who commented on the Theranos trial",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Neider"
+    },
+    {
+      "name": "Gelsinger",
+      "entity_type": "person",
+      "description": "CEO who was mentioned as an example of a leader who cultivated a healthy workplace culture",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Gelsinger"
+    },
+    {
+      "name": "Jeff Wiener",
+      "entity_type": "person",
+      "description": "CEO of LinkedIn who was mentioned as an example of a leader who cultivated a healthy workplace culture",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Jeff Wiener"
+    },
+    {
+      "name": "Pat Gelsinger",
+      "entity_type": "person",
+      "description": "CEO of Intel who was mentioned as an example of a leader who cultivated a healthy workplace culture",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Pat Gelsinger"
+    },
+    {
+      "name": "Shantanu Narayen",
+      "entity_type": "person",
+      "description": "CEO of Adobe who was mentioned as an example of a leader who cultivated a healthy workplace culture",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Shantanu Narayen"
+    },
+    {
+      "name": "Rosendorff",
+      "entity_type": "person",
+      "description": "Former Theranos lab director who testified in Elizabeth Holmes' trial",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Rosendorff"
+    },
+    {
+      "name": "Evans",
+      "entity_type": "person",
+      "description": "Person who wrote an email about Rosendorff's testimony",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Evans"
+    },
+    {
+      "name": "William Perry",
+      "entity_type": "person",
+      "description": "Former US Secretary of Defense and board member of Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "William Perry"
+    },
+    {
+      "name": "Sam Nunn",
+      "entity_type": "person",
+      "description": "Former US Senator and board member of Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Sam Nunn"
+    },
+    {
+      "name": "Richard Kovacevich",
+      "entity_type": "person",
+      "description": "Former Wells Fargo CEO and board member of Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Richard Kovacevich"
+    },
+    {
+      "name": "William H. Foege",
+      "entity_type": "person",
+      "description": "Former CDC director and board member of Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "William H. Foege"
+    },
+    {
+      "name": "Daniel Mosley",
+      "entity_type": "person",
+      "description": "Estate lawyer and employee of Henry Kissinger",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Daniel Mosley"
+    },
+    {
+      "name": "Waltons",
+      "entity_type": "organization",
+      "description": "Investor in Theranos",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Waltons"
+    },
+    {
+      "name": "Coxes",
+      "entity_type": "organization",
+      "description": "Investor in Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Coxes"
+    },
+    {
+      "name": "Oppenheimers",
+      "entity_type": "organization",
+      "description": "Investor in Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "Oppenheimers"
+    },
+    {
+      "name": "DeVoses",
+      "entity_type": "organization",
+      "description": "Investor in Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "DeVoses"
+    },
+    {
+      "name": "CMS",
+      "entity_type": "organization",
+      "description": "Regulatory agency that inspected Theranos",
+      "fact_count": 0,
+      "investigated": false,
+      "id": "CMS"
+    },
+    {
+      "name": "SEC",
+      "entity_type": "organization",
+      "description": "Regulatory agency that charged Elizabeth Holmes",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "SEC"
+    },
+    {
+      "name": "United States",
+      "entity_type": "organization",
+      "description": "Government entity that charged Elizabeth Holmes and Sunny Balwani",
+      "fact_count": 2,
+      "investigated": false,
+      "id": "United States"
+    },
+    {
+      "name": "Stanford",
+      "entity_type": "organization",
+      "description": "University that Elizabeth Holmes dropped out of",
+      "fact_count": 1,
+      "investigated": false,
+      "id": "Stanford"
+    }
+  ],
+  "edges": [
+    {
+      "rel_type": "founded",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "8e74bd04",
+      "source": "Elizabeth Holmes",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was allegedly abused by",
+      "confidence": 0.8,
+      "category": "social",
+      "source_url": "",
+      "fact_id": "0033ec62",
+      "source": "Elizabeth Holmes",
+      "target": "Sunny Balwani"
+    },
+    {
+      "rel_type": "is advising",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "f1271b4e",
+      "source": "Elizabeth Holmes",
+      "target": "Billy Evans"
+    },
+    {
+      "rel_type": "was interviewed on-stage at",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "0f3ca82e",
+      "source": "Elizabeth Holmes",
+      "target": "The Wall Street Journal"
+    },
+    {
+      "rel_type": "named one of her children",
+      "confidence": 1.0,
+      "category": "biographical",
+      "source_url": "",
+      "fact_id": "5448d358",
+      "source": "Elizabeth Holmes",
+      "target": "Invicta"
+    },
+    {
+      "rel_type": "swindled",
+      "confidence": 0.5,
+      "category": "social",
+      "source_url": "",
+      "fact_id": "2aaeaf2e",
+      "source": "Elizabeth Holmes",
+      "target": "Henry Kissinger"
+    },
+    {
+      "rel_type": "settled with",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "526e8989",
+      "source": "Elizabeth Holmes",
+      "target": "SEC"
+    },
+    {
+      "rel_type": "was charged by",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "cba583a0",
+      "source": "Elizabeth Holmes",
+      "target": "United States"
+    },
+    {
+      "rel_type": "dropped out of",
+      "confidence": 1.0,
+      "category": "biographical",
+      "source_url": "",
+      "fact_id": "da8682bc",
+      "source": "Elizabeth Holmes",
+      "target": "Stanford"
+    },
+    {
+      "rel_type": "joined",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "2810079b",
+      "source": "Sunny Balwani",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "denied allegations of abuse made by",
+      "confidence": 1.0,
+      "category": "social",
+      "source_url": "",
+      "fact_id": "be7748f8",
+      "source": "Sunny Balwani",
+      "target": "Elizabeth Holmes"
+    },
+    {
+      "rel_type": "was charged by",
+      "confidence": 1.0,
+      "category": "legal",
+      "source_url": "",
+      "fact_id": "8bb3a8f8",
+      "source": "Sunny Balwani",
+      "target": "United States"
+    },
+    {
+      "rel_type": "was in a 'pause period' as it sought to get its proprietary technology approved by",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "e7ca09cd",
+      "source": "Theranos",
+      "target": "FDA"
+    },
+    {
+      "rel_type": "shook up its board of directors",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "2c94766a",
+      "source": "Theranos",
+      "target": "Henry Kissinger"
+    },
+    {
+      "rel_type": "had a partnership with",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "ab49af84",
+      "source": "Theranos",
+      "target": "Safeway"
+    },
+    {
+      "rel_type": "had a partnership with",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "5da7d505",
+      "source": "Theranos",
+      "target": "Walgreens"
+    },
+    {
+      "rel_type": "received investment from",
+      "confidence": 1.0,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "71175613",
+      "source": "Theranos",
+      "target": "Waltons"
+    },
+    {
+      "rel_type": "raised millions of dollars for",
+      "confidence": 1.0,
+      "category": "financial",
+      "source_url": "",
+      "fact_id": "d78c85ef",
+      "source": "Billy Evans",
+      "target": "Haemanthus"
+    },
+    {
+      "rel_type": "sent a letter to Theranos stating its California lab had failed to comply with federal standards",
+      "confidence": 1.0,
+      "category": "regulatory",
+      "source_url": "",
+      "fact_id": "06e94c8e",
+      "source": "Centers for Medicare and Medicaid Services (CMS)",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "pulled back from its partnership with",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "6df38816",
+      "source": "Walgreens",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "dissolved its relationship with",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "afdcc552",
+      "source": "Safeway",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was board member of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "8976e673",
+      "source": "Henry Kissinger",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was board member of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "d1c7d9ea",
+      "source": "George Shultz",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was board member of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "df9bf2d5",
+      "source": "William Perry",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was board member of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "d5b3748a",
+      "source": "Sam Nunn",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was board member of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "53725c37",
+      "source": "Richard Kovacevich",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "was board member of",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "a1f2b844",
+      "source": "William H. Foege",
+      "target": "Theranos"
+    },
+    {
+      "rel_type": "worked for",
+      "confidence": 1.0,
+      "category": "professional",
+      "source_url": "",
+      "fact_id": "a06b935f",
+      "source": "Daniel Mosley",
+      "target": "Henry Kissinger"
+    }
+  ]
+}
