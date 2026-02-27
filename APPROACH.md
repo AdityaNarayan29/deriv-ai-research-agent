@@ -8,6 +8,9 @@
 - [Consecutive Search Strategy](#consecutive-search-strategy)
 - [Prompt Engineering](#prompt-engineering)
 - [Identity Graph Design](#identity-graph-design)
+- [Graph Database Architecture](#graph-database-architecture)
+- [FastAPI SSE Backend](#fastapi-sse-backend)
+- [Next.js Frontend](#nextjs-frontend)
 - [Evaluation Framework](#evaluation-framework)
 - [Error Handling & Resilience](#error-handling--resilience)
 - [LangSmith Observability](#langsmith-observability)
@@ -36,14 +39,26 @@ The agent is built as a **LangGraph state machine** with 7 specialized nodes and
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                          STREAMLIT FRONTEND (app.py)                            │
-│  ┌──────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐   │
-│  │  Input    │  │  Live Agent  │  │  Identity     │  │  Risk Assessment    │   │
-│  │  Form     │  │  Progress    │  │  Graph (HTML) │  │  Report             │   │
-│  └──────────┘  └──────────────┘  └──────────────┘  └──────────────────────┘   │
-└───────────────────────────────┬─────────────────────────────────────────────────┘
-                                │
-                                ▼
+│                              FRONTENDS                                          │
+│                                                                                 │
+│  ┌────────────────────────────────┐   ┌────────────────────────────────────┐   │
+│  │  Streamlit (app.py) :8501      │   │  Next.js (frontend/) :3000         │   │
+│  │  ┌────────┐ ┌──────┐ ┌──────┐ │   │  ┌────────┐ ┌──────┐ ┌──────────┐│   │
+│  │  │ Input  │ │ Live │ │ HTML │ │   │  │ React  │ │ SSE  │ │ React    ││   │
+│  │  │ Form   │ │ Logs │ │Graph │ │   │  │ Flow   │ │Stream│ │ Markdown ││   │
+│  │  └────────┘ └──────┘ └──────┘ │   │  │ Graph  │ │ Logs │ │ Report   ││   │
+│  └────────────┬───────────────────┘   │  └────────┘ └──────┘ └──────────┘│   │
+│               │ (direct)              └────────────┬───────────────────────┘   │
+│               │                                    │ (HTTP + SSE)              │
+│               │                         ┌──────────▼──────────┐               │
+│               │                         │  FastAPI (api.py)    │               │
+│               │                         │  :8000               │               │
+│               │                         └──────────┬──────────┘               │
+│               └──────────────┬─────────────────────┘                          │
+│                              ▼                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                        LANGGRAPH STATE MACHINE (agent/graph.py)                 │
 │                                                                                 │
@@ -57,7 +72,8 @@ The agent is built as a **LangGraph state machine** with 7 specialized nodes and
 │  ┌─────────────┐    ┌──────────────┐    ┌──────────────────┐                   │
 │  │ 7. REPORT   │◀───│ 6. GRAPH     │◀───│ 4. RISK          │                   │
 │  │ GENERATOR   │    │ BUILDER      │    │ ANALYZER         │                   │
-│  │ (Gemini)    │    │ (NetworkX)   │    │ (Gemini)         │                   │
+│  │ (Gemini)    │    │ (NetworkX+   │    │ (Gemini)         │                   │
+│  │             │    │  SQLite)     │    │                  │                   │
 │  └─────────────┘    └──────────────┘    └────────┬─────────┘                   │
 │                                                   │                             │
 │                                          ┌────────▼─────────┐                   │
@@ -77,8 +93,8 @@ The agent is built as a **LangGraph state machine** with 7 specialized nodes and
         ┌───────────────────────┼───────────────────────┐
         ▼                       ▼                       ▼
 ┌──────────────┐    ┌──────────────────┐    ┌──────────────────┐
-│ Identity     │    │ Risk Assessment  │    │ LangSmith        │
-│ Graph (HTML) │    │ Report (MD)      │    │ Traces           │
+│ Graph DB     │    │ Risk Assessment  │    │ LangSmith        │
+│ (SQLite)     │    │ Report (MD)      │    │ Traces           │
 └──────────────┘    └──────────────────┘    └──────────────────┘
 ```
 
@@ -113,20 +129,21 @@ Output (Iteration 2 — INFORMED by previous findings):
 ---
 
 ### Step 2: Search Executor → `agent/nodes/search_executor.py`
-**Tool**: Tavily API (advanced search depth)
+**Tool**: Tavily API (advanced search depth) | **Execution**: Parallel via `ThreadPoolExecutor`
 
-Runs each query through Tavily and collects structured results:
+Runs each query through Tavily in parallel and collects structured results:
 
 ```
-For each query:
+For each query (executed concurrently):
   → Tavily API call (max 5 results per query)
   → Returns: { url, title, content, relevance_score }
-  → 1-second delay between queries (rate limiting)
   → Deduplicates by URL across all iterations
 ```
 
 **Per iteration**: 5 queries × 5 results = ~25 new search results
 **Across 3 iterations**: ~75 total results processed
+
+**Why parallel?** Sequential execution added ~5 seconds per query. Using `ThreadPoolExecutor` runs all 5 queries concurrently, cutting per-iteration search time from ~25s to ~5s.
 
 ---
 
@@ -382,37 +399,152 @@ The Query Refiner prompt receives the full investigation context to make informe
 
 ## Identity Graph Design
 
-### Technology Choice: NetworkX + pyvis
-- **NetworkX**: Python graph library for construction and analysis
-- **pyvis**: Converts NetworkX graphs to interactive HTML using vis.js
-- **No external services needed** — no Docker, no cloud databases
+### Technology: NetworkX + pyvis (Streamlit) / React Flow + dagre (Next.js)
+
+Two visualization paths, same underlying data:
+
+1. **Streamlit path**: NetworkX builds the graph → pyvis renders interactive HTML using vis.js
+2. **Next.js path**: Facts + entities sent via SSE → `transformGraphData.ts` builds React Flow nodes/edges → dagre computes hierarchical layout → GSAP animates entrance
 
 ### Visual Encoding
 
 ```
 Node Shape + Color = Entity Type
-  👤 Blue circle    = Person
-  🏢 Orange diamond = Organization
-  📅 Green triangle = Event
-  📄 Purple square  = Filing
-  📍 Red star       = Location
-  🔴 Large red dot  = Investigation target (highlighted)
+  Person:       Blue (#6366f1)    = circle
+  Organization: Orange (#f59e0b)  = diamond
+  Event:        Green (#10b981)   = triangle
+  Filing:       Purple (#8b5cf6)  = square
+  Location:     Red (#ef4444)     = star
+  Target:       Large red node with gold border = highlighted center
 
 Edge Color = Confidence Level
-  🟢 Green  = High confidence (≥80%)
-  🟡 Yellow = Medium confidence (≥50%)
-  🔴 Red    = Low confidence (<50%)
+  Green (#10b981)  = High confidence (≥80%)
+  Yellow (#eab308) = Medium confidence (≥50%)
+  Red (#ef4444)    = Low confidence (<50%)
 
 Edge Width = Proportional to confidence score
 Edge Label = Relationship predicate (e.g., "is CEO of", "charged")
 Edge Arrow = Direction of relationship
 ```
 
-### Physics Layout
-The graph uses ForceAtlas2 physics simulation for natural-looking layouts where:
-- Connected nodes cluster together
-- The target stays central
-- Unrelated entities drift to the periphery
+### Layout Strategies
+- **Streamlit (pyvis)**: ForceAtlas2 physics simulation — connected nodes cluster naturally
+- **Next.js (dagre)**: Hierarchical top-down layout — target at top center, entities spread below with 100px node separation and 130px rank separation
+
+### Interactive Features (Next.js)
+- **Click a node**: dims non-connected nodes/edges to 15% opacity, highlights direct connections
+- **Click background**: resets all highlights
+- **GSAP animations**: staggered fade-in of nodes on initial render
+- **MiniMap**: overview panel for navigation (hidden on mobile)
+- **Legend overlay**: color-coded entity type reference
+
+---
+
+## Graph Database Architecture
+
+### Why a Graph DB?
+Due diligence investigations naturally form graphs — people connected to organizations connected to regulatory actions. Storing this in a graph database enables:
+- **Centrality analysis**: Which entity is the most connected? (degree centrality, betweenness centrality)
+- **Community detection**: Which entities cluster together?
+- **Shortest path**: How is Entity A connected to Entity B?
+- **Persistence**: SQLite stores the graph between sessions
+
+### Architecture: Abstract Interface + Swappable Backend
+
+```
+agent/graph_db/
+├── interface.py        # Abstract GraphDBInterface
+├── networkx_backend.py # NetworkX + SQLite implementation
+├── analytics.py        # Centrality, community detection, shortest path
+└── __init__.py         # Factory: get_graph_db(backend="networkx")
+```
+
+**`GraphDBInterface`** defines the contract:
+- `add_entity()`, `add_relationship()`, `get_entity()`, `get_neighbors()`
+- `shortest_path()`, `connected_components()`
+- `degree_centrality()`, `betweenness_centrality()`, `community_detection()`
+- `save()`, `load()`, `clear()`
+
+**`NetworkXBackend`** implements this using NetworkX for in-memory graph operations and SQLite for persistence. The abstract interface means swapping to Neo4j requires only a new backend class — no changes to calling code.
+
+### SQLite Schema
+- `entities` table: id, name, type, description, metadata JSON
+- `relationships` table: source_id, target_id, type, weight, metadata JSON
+- Graph loaded into NetworkX on startup for fast analytics, saved back to SQLite on mutation
+
+---
+
+## FastAPI SSE Backend
+
+### Why FastAPI + SSE?
+The LangGraph agent takes 3-7 minutes to run. Users need real-time progress feedback, not a loading spinner. Server-Sent Events (SSE) provide a simple, unidirectional stream over HTTP.
+
+### Architecture (`api.py`)
+
+```
+POST /api/investigate → Start investigation, returns SSE stream
+POST /api/demo        → Start demo investigation (pre-built data, no API keys needed)
+GET  /api/health      → API key status check
+```
+
+### SSE Event Types
+```
+node_start       → { node: "query_planner", iteration: 0 }
+log              → { message: "Generated 5 queries" }
+facts_update     → { facts: [...], total: 18 }
+entities_update  → { entities: [...], total: 11 }
+risks_update     → { risks: [...], total: 5 }
+complete         → { report: "...", facts: [...], entities: [...], risks: [...] }
+error            → { message: "API rate limit exceeded" }
+```
+
+### Demo Mode
+`demo_data.py` contains a pre-built Timothy Overturf investigation with 45 facts, 26 entities, 8 risk flags, and a complete markdown report. The demo endpoint distributes this data across 3 simulated iterations with realistic timing delays — no API keys required. This allows showcasing the full UI without consuming API quota.
+
+---
+
+## Next.js Frontend
+
+### Why a Second Frontend?
+Streamlit is excellent for rapid prototyping, but limited for complex interactive visualizations. The Next.js frontend provides:
+- **React Flow identity graph** with dagre layout, hover interactions, and GSAP animations
+- **Real-time SSE streaming** of investigation progress
+- **Mobile-responsive design** (tested down to 320px width)
+- **Polished UI** with shadcn/ui components, dark theme, and smooth transitions
+
+### Tech Stack
+- **Next.js 15** + App Router + TypeScript
+- **Tailwind CSS** + **shadcn/ui** for components
+- **React Flow** (@xyflow/react) for the identity graph
+- **dagre** for automatic hierarchical graph layout
+- **GSAP** for entrance animations
+- **react-markdown** + remark-gfm for report rendering
+
+### State Management
+`useInvestigation.ts` — a `useReducer`-based hook that acts as an SSE state machine:
+```
+idle → running → complete | error
+```
+Tracks: currentNode, progress, logs[], facts[], entities[], riskFlags[], report, iteration. Each SSE event dispatches to the reducer, which appends to lists and deduplicates by ID.
+
+### Key Components
+| Component | Purpose |
+|-----------|---------|
+| `PipelineProgress` | Horizontal 7-step indicator, current node pulses |
+| `ExecutionLog` | Monospace scrolling log with auto-scroll |
+| `MetricsCards` | Animated counter cards (facts, entities, risks, iterations) |
+| `IdentityGraph` | React Flow container with legend, stats, MiniMap |
+| `ReportTab` | Dark-themed markdown rendering with custom components |
+| `FactsTab` | Sortable facts list with confidence dots and source links |
+| `RisksTab` | Severity-ranked risk cards (5→1) with recommendations |
+| `EntitiesTab` | Grid of entity cards with type badges |
+
+### Mobile Responsiveness
+Every component uses Tailwind responsive breakpoints (`sm:`, `md:`, `lg:`) to scale from mobile (320px) to desktop. Key adaptations:
+- Graph height scales: 350px → 500px → 600px → 650px
+- Legend and MiniMap hidden on mobile (< 640px)
+- Tabs horizontally scrollable on narrow screens
+- Text and padding scale proportionally
 
 ---
 
@@ -424,22 +556,30 @@ The assignment explicitly states: *"Before starting, make sure to develop an eva
 We defined 3 personas with ground-truth facts **before building the agent**, then used them to measure performance.
 
 ### Persona 1: Timothy Overturf (Primary Target — Hard)
-- **Challenge**: Limited online presence
+- **Challenge**: Limited online presence, niche financial industry figure
 - **Tests**: Agent's ability to find information on less-public individuals
-- **Ground truth**: 1 verified fact, 2 known entities
-- **Expected categories**: professional, financial
+- **Ground truth**: 14 expected facts, 16 expected entities, 7 expected risks
+- **Expected categories**: professional, financial, regulatory, legal
+- **Detailed spec**: `evaluation/persona_1_timothy_overturf.json`
 
 ### Persona 2: Elizabeth Holmes (Baseline — Easy)
 - **Challenge**: Extremely well-documented
 - **Tests**: Basic search and extraction capabilities (should achieve >80% recall)
-- **Ground truth**: 10 verified facts, 6 known entities
+- **Ground truth**: 12 expected facts, 15 expected entities, 6 expected risks
 - **Expected categories**: professional, legal, financial, biographical, regulatory, social
+- **Detailed spec**: `evaluation/persona_2_elizabeth_holmes.json`
 
 ### Persona 3: Martin Shkreli (Depth Test — Medium)
 - **Challenge**: Complex network of companies, legal issues, controversies
 - **Tests**: Ability to uncover non-obvious connections and trace corporate relationships
-- **Ground truth**: 8 verified facts, 5 known entities
+- **Ground truth**: 11 expected facts, 14 expected entities, 7 expected risks
 - **Expected categories**: professional, legal, financial, social
+- **Detailed spec**: `evaluation/persona_3_martin_shkreli.json`
+
+### Evaluation Data Structure
+Each persona has two data sources:
+1. **`eval_data.py`** — lightweight ground truth used by `run_eval.py` (fact strings + entity names)
+2. **`persona_*.json`** — detailed scoring criteria with expected entity types, fact categories, risk severities, and scoring rubrics for manual review
 
 ### Metrics
 
@@ -471,9 +611,24 @@ Graph Builder:    Returns empty if no data
 Report Generator: Gemini → Groq fallback → raw data fallback (no LLM)
 ```
 
+### LLM Retry with Exponential Backoff (`agent/llm_retry.py`)
+All LLM calls are wrapped in a configurable retry decorator:
+```
+Attempt 1: call LLM
+Attempt 2: wait 2s, retry
+Attempt 3: wait 4s, retry
+Attempt 4: wait 8s, retry (max)
+```
+- **Max retries**: 3 (configurable)
+- **Base delay**: 2 seconds (doubles each attempt)
+- **Max delay**: capped at 30 seconds
+- Catches rate limit errors (429), transient network failures, and API timeouts
+- Falls through to node-level error handling if all retries exhausted
+
 ### Rate Limiting
-- **Search**: 1-second delay between Tavily API calls (configurable)
-- **LLM**: Gemini auto-retries with exponential backoff on 429 errors
+- **Search**: Parallel via `ThreadPoolExecutor` (5 queries concurrent)
+- **LLM**: Exponential backoff retry on rate limit (429) errors
+- **Model fallback**: If Gemini exhausts retries, falls back to Groq
 - **All configurable** via `config/settings.py`
 
 ### Deduplication
@@ -520,14 +675,17 @@ In addition to LangSmith, every node writes timestamped logs to the `execution_l
 
 | Decision | Chosen | Alternative | Why |
 |----------|--------|-------------|-----|
-| Graph DB | NetworkX + pyvis | Neo4j | Zero setup, no Docker. Interactive HTML output is more portable for demos. Neo4j would be better for production (persistent storage, Cypher queries). |
+| Graph DB | NetworkX + SQLite | Neo4j | Zero setup, no Docker. SQLite provides persistence. Abstract interface (`GraphDBInterface`) allows swapping to Neo4j with zero calling-code changes. |
+| Graph Visualization | React Flow + dagre (Next.js) + pyvis (Streamlit) | D3.js, vis.js only | React Flow integrates natively with React. dagre gives deterministic hierarchical layouts. pyvis kept for Streamlit's HTML embedding. |
 | Search API | Tavily | SerpAPI, Google Custom Search | Tavily is built for AI agents — returns clean, structured content. Free tier (1000 searches/month) is sufficient. |
+| Search execution | Parallel (ThreadPoolExecutor) | Sequential, 1 req/sec | 5x faster per iteration. Tavily handles concurrent requests well. |
 | LLM for extraction | Groq/Llama 3.3 70B | GPT-4, Claude | Free, ~500 tok/sec (5-10x faster). Extraction is pattern-based; doesn't need frontier reasoning. |
 | LLM for analysis | Gemini 2.0 Flash | Claude, GPT-4 | Free tier available. Strong cross-referencing ability. Automatic fallback to Groq if rate-limited. |
+| LLM resilience | Retry with backoff + model fallback | Single attempt | Retry catches transient 429 errors. If retries exhaust, Gemini → Groq fallback ensures the pipeline never blocks. |
+| API layer | FastAPI + SSE | WebSockets, polling | SSE is simpler than WebSockets for unidirectional streaming. Native browser support, no library needed client-side. |
+| Frontend | Next.js + shadcn/ui | Streamlit only | Streamlit kept for rapid iteration. Next.js added for polished, mobile-responsive UI with interactive graph. |
 | State management | TypedDict + reducers | Pydantic model | LangGraph natively supports TypedDict. Custom reducers handle list deduplication elegantly. |
-| Eval approach | Fuzzy term matching | Exact string match | Real-world extraction paraphrases facts. Fuzzy matching (≥50% term overlap) is more realistic. |
-| Rate limiting | Sequential, 1 req/sec | Parallel async | Simpler, respects API limits, avoids 429 errors. Async would be better for production throughput. |
-| Model fallback | Gemini → Groq | Retry with backoff | Faster resolution. Waiting for Gemini recovery can add minutes of latency. |
+| Eval approach | Fuzzy term matching + JSON persona files | Exact string match | Real-world extraction paraphrases facts. Fuzzy matching (≥50% term overlap) is more realistic. JSON files add scoring rubrics. |
 
 ---
 
@@ -538,7 +696,7 @@ In addition to LangSmith, every node writes timestamped logs to the `execution_l
 ```
 Target: Timothy Overturf, CEO of Sisu Capital
 Iterations: 3
-Duration: ~7 minutes
+Duration: ~7 minutes (live) / ~15 seconds (demo mode)
 
 Iteration 1:
   → 5 queries, 25 search results
@@ -559,12 +717,19 @@ Iteration 3:
   → Decision: STOP (max iterations, diminishing returns)
 
 Final Output:
-  → 42 total facts extracted
-  → 24 total entities discovered
-  → 15 risk flags identified
-  → Identity graph: 51 nodes, 35 edges
+  → 45 total facts extracted (demo data)
+  → 26 total entities discovered
+  → 8 risk flags identified
+  → Identity graph: 27 nodes, 36 edges
   → Full risk assessment report generated
 ```
+
+### Demo Data
+`demo_data.py` contains a curated version of this investigation with 45 facts designed so that every fact produces at least one edge in the identity graph (all subjects and objects match known entity names). This gives the graph maximum density for visual impact. The demo includes:
+- 45 facts across all 6 categories (biographical, professional, financial, legal, social, regulatory)
+- 26 entities across all 5 types (person, organization, event, filing, location)
+- 8 risk flags from severity 2 (moderate) to 5 (critical)
+- A complete markdown risk assessment report
 
 ### Key Findings Discovered
 
@@ -581,24 +746,26 @@ Final Output:
 
 ## Scalability & Production Considerations
 
-### Current Design (Optimized for Demo)
-- Single-threaded search execution
-- In-memory graph (NetworkX)
-- File-based output (HTML, Markdown)
-- Free-tier APIs
+### Current Design
+- Parallel search execution via `ThreadPoolExecutor`
+- NetworkX + SQLite graph database (persistent, with analytics)
+- FastAPI SSE backend for real-time streaming
+- Next.js frontend with React Flow identity graph
+- LLM retry with exponential backoff
+- Free-tier APIs (Groq, Gemini, Tavily)
 
 ### Production Evolution
 
 | Aspect | Current | Production |
 |--------|---------|------------|
-| Graph storage | NetworkX (in-memory) | Neo4j (persistent, queryable with Cypher) |
-| Search execution | Sequential | Async with aiohttp (parallel queries) |
+| Graph storage | NetworkX + SQLite | Neo4j (Cypher queries, native graph algorithms) |
+| Search execution | Parallel (ThreadPoolExecutor) | Async with aiohttp (even higher concurrency) |
 | Caching | None | Redis (cache search results, reduce API calls) |
-| API layer | CLI / Streamlit | FastAPI microservice |
+| API layer | FastAPI + SSE | FastAPI + WebSockets (bidirectional) |
 | Authentication | None | OAuth2 / API keys per tenant |
-| Deployment | Local Python | Docker → Kubernetes |
+| Deployment | Local Python + Next.js | Docker → Kubernetes |
 | Monitoring | LangSmith + file logs | LangSmith + Prometheus + Grafana |
-| Rate limiting | time.sleep() | Token bucket with Redis |
+| Rate limiting | Exponential backoff | Token bucket with Redis |
 | Multi-tenancy | Single user | Queue-based with Celery workers |
 
 ### What I Would Add With More Time
