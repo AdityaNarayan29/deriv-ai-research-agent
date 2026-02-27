@@ -37,65 +37,56 @@ The agent is built as a **LangGraph state machine** with 7 specialized nodes and
 
 ## System Architecture
 
+### State Machine (LangGraph)
+
+```mermaid
+flowchart TD
+    A["1. Query Planner\n(Groq Llama 3.3 70B)\n5 diverse queries"]
+    B["2. Search\n(Tavily)\nParallel search"]
+    C["3. Fact Extractor\n(Groq Llama 3.3 70B)\nSubject-Predicate-Object\n+ Confidence scores"]
+    D["4. Risk Analyzer\n(Gemini 2.0 Flash)\nCross-reference & flag issues"]
+    E{"5. Query Refiner\n(Groq Llama 3.3 70B)\nDecision: Continue or Stop?"}
+    F["6. Graph Builder\n(NetworkX + SQLite)\nNodes & Edges"]
+    G["7. Report Generator\n(Gemini 2.0 Flash)\nMarkdown with citations"]
+    H(["Final Output\nGraph + Report"])
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E -- "YES: Continue\nGenerate next queries" --> B
+    E -- "NO: Stop\nAll entities investigated" --> F
+    F --> G
+    G --> H
+
+    style A fill:#e8f0fe,stroke:#1a73e8,color:#000
+    style B fill:#fef7e0,stroke:#e8a817,color:#000
+    style C fill:#e0f0ff,stroke:#4a90d9,color:#000
+    style D fill:#e8e0f0,stroke:#7b61ff,color:#000
+    style E fill:#fce4ec,stroke:#d32f2f,color:#000
+    style F fill:#e0f5e0,stroke:#2e7d32,color:#000
+    style G fill:#e0f5e0,stroke:#2e7d32,color:#000
+    style H fill:#fff3e0,stroke:#e65100,color:#000
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              FRONTENDS                                          │
-│                                                                                 │
-│  ┌────────────────────────────────┐   ┌────────────────────────────────────┐   │
-│  │  Streamlit (app.py) :8501      │   │  Next.js (frontend/) :3000         │   │
-│  │  ┌────────┐ ┌──────┐ ┌──────┐ │   │  ┌────────┐ ┌──────┐ ┌──────────┐│   │
-│  │  │ Input  │ │ Live │ │ HTML │ │   │  │ React  │ │ SSE  │ │ React    ││   │
-│  │  │ Form   │ │ Logs │ │Graph │ │   │  │ Flow   │ │Stream│ │ Markdown ││   │
-│  │  └────────┘ └──────┘ └──────┘ │   │  │ Graph  │ │ Logs │ │ Report   ││   │
-│  └────────────┬───────────────────┘   │  └────────┘ └──────┘ └──────────┘│   │
-│               │ (direct)              └────────────┬───────────────────────┘   │
-│               │                                    │ (HTTP + SSE)              │
-│               │                         ┌──────────▼──────────┐               │
-│               │                         │  FastAPI (api.py)    │               │
-│               │                         │  :8000               │               │
-│               │                         └──────────┬──────────┘               │
-│               └──────────────┬─────────────────────┘                          │
-│                              ▼                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        LANGGRAPH STATE MACHINE (agent/graph.py)                 │
-│                                                                                 │
-│  ┌─────────────┐    ┌──────────────┐    ┌──────────────────┐                   │
-│  │ 1. QUERY    │───▶│ 2. SEARCH    │───▶│ 3. FACT          │                   │
-│  │ PLANNER     │    │ EXECUTOR     │    │ EXTRACTOR        │                   │
-│  │ (Groq)      │    │ (Tavily API) │    │ (Groq/Llama 3.3) │                   │
-│  └─────────────┘    └──────────────┘    └────────┬─────────┘                   │
-│                                                   │                             │
-│                                                   ▼                             │
-│  ┌─────────────┐    ┌──────────────┐    ┌──────────────────┐                   │
-│  │ 7. REPORT   │◀───│ 6. GRAPH     │◀───│ 4. RISK          │                   │
-│  │ GENERATOR   │    │ BUILDER      │    │ ANALYZER         │                   │
-│  │ (Gemini)    │    │ (NetworkX+   │    │ (Gemini)         │                   │
-│  │             │    │  SQLite)     │    │                  │                   │
-│  └─────────────┘    └──────────────┘    └────────┬─────────┘                   │
-│                                                   │                             │
-│                                          ┌────────▼─────────┐                   │
-│                                          │ 5. QUERY          │                   │
-│                          ┌──────────────▶│ REFINER           │                   │
-│                          │  LOOP         │ (Groq)            │                   │
-│                          │               └────────┬─────────┘                   │
-│                          │                        │                             │
-│                          │    new entities found?  │                             │
-│                          │    ┌─────┐    ┌─────┐  │                             │
-│                          └────│ YES │    │ NO  │──┘                             │
-│                               └─────┘    └──┬──┘                               │
-│                             back to          go to                              │
-│                             Node 2           Node 6                             │
-└───────────────────────────────┬─────────────────────────────────────────────────┘
-                                │
-        ┌───────────────────────┼───────────────────────┐
-        ▼                       ▼                       ▼
-┌──────────────┐    ┌──────────────────┐    ┌──────────────────┐
-│ Graph DB     │    │ Risk Assessment  │    │ LangSmith        │
-│ (SQLite)     │    │ Report (MD)      │    │ Traces           │
-└──────────────┘    └──────────────────┘    └──────────────────┘
+
+### Full System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  FRONTENDS                                                          │
+│  ┌─────────────────────┐    ┌──────────────────────────────────┐   │
+│  │ Streamlit :8501     │    │ Next.js :3000                    │   │
+│  │ (direct invocation) │    │ (SSE via FastAPI :8000)          │   │
+│  └─────────┬───────────┘    └───────────────┬──────────────────┘   │
+│            └────────────┬───────────────────┘                      │
+└─────────────────────────┼──────────────────────────────────────────┘
+                          ▼
+        LangGraph State Machine (agent/graph.py)
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+  Graph DB          Risk Report       LangSmith
+  (SQLite)          (Markdown)        Traces
 ```
 
 ---

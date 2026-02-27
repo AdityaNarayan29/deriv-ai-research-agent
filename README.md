@@ -6,30 +6,34 @@ An autonomous research agent that investigates individuals for due diligence and
 
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                   LANGGRAPH STATE MACHINE                        │
-│                                                                  │
-│  ┌──────────┐   ┌──────────┐   ┌──────────────┐                │
-│  │ 1. Query │──▶│ 2. Search│──▶│ 3. Fact      │                │
-│  │ Planner  │   │ Executor │   │ Extractor    │                │
-│  │ (Groq)   │   │ (Tavily) │   │ (Groq)       │                │
-│  └──────────┘   └──────────┘   └──────┬───────┘                │
-│                                        │                        │
-│  ┌──────────┐   ┌──────────┐   ┌──────▼───────┐                │
-│  │ 7. Report│◀──│ 6. Graph │◀──│ 4. Risk      │                │
-│  │ Generator│   │ Builder  │   │ Analyzer     │                │
-│  │ (Gemini) │   │(NetworkX)│   │ (Gemini)     │                │
-│  └──────────┘   └──────────┘   └──────┬───────┘                │
-│                                        │                        │
-│                                ┌───────▼───────┐               │
-│                    ┌──────────▶│ 5. Query      │               │
-│                    │  LOOP     │ Refiner (Groq)│               │
-│                    │           └───┬───────┬───┘               │
-│                    │           YES │       │ NO                 │
-│                    └───────────────┘       ▼                    │
-│                                      To Graph Builder           │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["1. Query Planner\n(Groq Llama 3.3 70B)\n5 diverse queries"]
+    B["2. Search\n(Tavily)\nParallel search"]
+    C["3. Fact Extractor\n(Groq Llama 3.3 70B)\nSubject-Predicate-Object\n+ Confidence scores"]
+    D["4. Risk Analyzer\n(Gemini 2.0 Flash)\nCross-reference & flag issues"]
+    E{"5. Query Refiner\n(Groq Llama 3.3 70B)\nDecision: Continue or Stop?"}
+    F["6. Graph Builder\n(NetworkX + SQLite)\nNodes & Edges"]
+    G["7. Report Generator\n(Gemini 2.0 Flash)\nMarkdown with citations"]
+    H(["Final Output\nGraph + Report"])
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E -- "YES: Continue\nGenerate next queries" --> B
+    E -- "NO: Stop\nAll entities investigated" --> F
+    F --> G
+    G --> H
+
+    style A fill:#e8f0fe,stroke:#1a73e8,color:#000
+    style B fill:#fef7e0,stroke:#e8a817,color:#000
+    style C fill:#e0f0ff,stroke:#4a90d9,color:#000
+    style D fill:#e8e0f0,stroke:#7b61ff,color:#000
+    style E fill:#fce4ec,stroke:#d32f2f,color:#000
+    style F fill:#e0f5e0,stroke:#2e7d32,color:#000
+    style G fill:#e0f5e0,stroke:#2e7d32,color:#000
+    style H fill:#fff3e0,stroke:#e65100,color:#000
 ```
 
 **Key feature**: The agent loops through Steps 2-5 up to 5 times, discovering new entities each iteration and generating targeted follow-up queries. This is how it uncovers non-obvious connections.
