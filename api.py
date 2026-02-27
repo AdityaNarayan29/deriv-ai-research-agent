@@ -28,9 +28,18 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="AI Research Agent API", version="1.0.0")
 
+import os as _os
+_allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+# Allow the deployed Vercel frontend
+if _os.getenv("FRONTEND_URL"):
+    _allowed_origins.append(_os.getenv("FRONTEND_URL"))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
