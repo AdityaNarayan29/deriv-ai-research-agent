@@ -222,9 +222,13 @@ async def investigate(req: InvestigateRequest):
         thread = threading.Thread(target=run_agent, daemon=True)
         thread.start()
 
-        # Yield SSE events from queue
+        # Yield SSE events from queue, with keepalive to prevent proxy timeouts
         while True:
-            event = await queue.get()
+            try:
+                event = await asyncio.wait_for(queue.get(), timeout=15)
+            except asyncio.TimeoutError:
+                yield ": keepalive\n\n"
+                continue
             if event is None:
                 break
             yield event
