@@ -264,13 +264,43 @@ def graph_builder(state: AgentState) -> dict:
         )
 
     # --- Compute graph analytics ---
-    analytics = compute_investigation_analytics(db)
+    try:
+        analytics = compute_investigation_analytics(db)
+    except Exception as e:
+        logger.warning(f"GraphBuilder: analytics computation failed: {e}")
+        analytics = {
+            "node_count": G.number_of_nodes(),
+            "edge_count": G.number_of_edges(),
+            "degree_centrality_top5": [],
+            "betweenness_centrality_top5": [],
+            "num_components": 0,
+            "largest_component_size": 0,
+            "num_communities": 0,
+            "community_sizes": [],
+        }
     logger.info(
         f"GraphBuilder analytics: {analytics['node_count']} nodes, "
         f"{analytics['edge_count']} edges, "
         f"{analytics['num_communities']} communities, "
         f"{analytics['num_components']} components"
     )
+
+    # Build serializable analytics dict for report_generator
+    graph_analytics = {
+        "total_nodes": analytics["node_count"],
+        "total_edges": analytics["edge_count"],
+        "top_entities_by_betweenness": [
+            {"name": name, "score": round(score, 3)}
+            for name, score in analytics.get("betweenness_centrality_top5", [])
+        ],
+        "top_entities_by_degree": [
+            {"name": name, "score": round(score, 3)}
+            for name, score in analytics.get("degree_centrality_top5", [])
+        ],
+        "num_communities": analytics.get("num_communities", 0),
+        "largest_community_size": analytics.get("largest_component_size", 0),
+        "num_connected_components": analytics.get("num_components", 0),
+    }
 
     # Save graph DB to JSON for portability
     json_path = os.path.join(settings.output_dir, f"{safe_name}_graph.json")
@@ -340,6 +370,7 @@ def graph_builder(state: AgentState) -> dict:
 
     return {
         "graph_html": html_path,
+        "graph_analytics": graph_analytics,
         "execution_log": [log_msg],
     }
 
