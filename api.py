@@ -10,7 +10,7 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -61,7 +61,7 @@ _LIST_KEYS = {
 class InvestigateRequest(BaseModel):
     target_name: str
     target_context: str = ""
-    max_iterations: int = 5
+    max_iterations: int = Field(default=5, ge=1, le=10)
 
 
 def _serialize(obj) -> dict | str | list:
