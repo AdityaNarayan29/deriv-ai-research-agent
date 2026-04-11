@@ -38,8 +38,8 @@ outputs/logs/*.log
 # LangSmith
 .langsmith/
 
-# pyvis generated assets
-lib/
+# pyvis generated assets (root-level only, not frontend/src/lib/)
+/lib/
 
 # Next.js frontend
 frontend/node_modules/

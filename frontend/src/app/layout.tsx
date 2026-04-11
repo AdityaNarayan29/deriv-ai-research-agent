@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Research Agent — Due Diligence",
+  title: "masst spy — AI Due Diligence Agent",
   description:
     "Autonomous due diligence investigation powered by LangGraph + Groq + Gemini",
 };

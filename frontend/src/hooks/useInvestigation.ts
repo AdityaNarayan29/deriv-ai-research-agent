@@ -1,7 +1,8 @@
 "use client";
 
 import { useReducer, useCallback } from "react";
-import { startInvestigation, startDemoInvestigation } from "@/lib/api";
+import { startInvestigation } from "@/lib/api";
+import { runDemoLocally } from "@/lib/demoSimulator";
 import type { ExtractedFact, Entity, RiskFlag, SSEEvent } from "@/lib/types";
 
 export type InvestigationStatus = "idle" | "running" | "complete" | "error";
@@ -155,9 +156,7 @@ export function useInvestigation() {
   const startDemo = useCallback(async () => {
     dispatch({ type: "START" });
     try {
-      await startDemoInvestigation((event) =>
-        dispatch({ type: "SSE_EVENT", event })
-      );
+      await runDemoLocally((event) => dispatch({ type: "SSE_EVENT", event }));
     } catch (err) {
       dispatch({ type: "ERROR", error: (err as Error).message });
     }

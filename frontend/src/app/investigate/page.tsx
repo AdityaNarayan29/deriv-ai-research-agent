@@ -43,7 +43,7 @@ function InvestigateContent() {
       {/* Header */}
       <div className="mb-4 sm:mb-6">
         <a href="/" className="text-xs text-neutral-400 hover:text-orange-400 sm:text-sm">
-          ← Back
+          ← <span className="text-orange-500/70 font-semibold">masst spy</span>
         </a>
         <h1 className="mt-1.5 text-lg font-bold text-white sm:mt-2 sm:text-xl md:text-2xl">
           Investigating: {name}
