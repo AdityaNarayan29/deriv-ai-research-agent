@@ -16,7 +16,7 @@ import logging
 from langgraph.graph import StateGraph, END
 
 from config.settings import settings
-from agent.state import AgentState
+from agent.state import AgentState, Entity, EntityType
 
 
 def _configure_langsmith():
@@ -89,13 +89,25 @@ def create_initial_state(target_name: str, target_context: str = "", max_iterati
         target_context: Additional context (e.g., "CEO of Sisu Capital")
         max_iterations: Maximum search loop iterations (default: 5)
     """
+    # Seed the target as the first entity so search_executor can mark it
+    # investigated after iteration 1. Hardcoded as PERSON — due diligence
+    # targets are almost always individuals. If the target is an org,
+    # fact_extractor will discover the correct type and the graph_builder
+    # fuzzy match handles both.
+    target_entity = Entity(
+        name=target_name,
+        entity_type=EntityType.PERSON,
+        description=target_context,
+        investigated=False,
+    )
+
     return {
         "target_name": target_name,
         "target_context": target_context,
         "search_queries": [],
         "search_results": [],
         "completed_queries": [],
-        "entities": [],
+        "entities": [target_entity],
         "facts": [],
         "risk_flags": [],
         "iteration": 0,
