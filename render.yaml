@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: deriv-research-agent-api
+    name: masst-spy-api
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -19,6 +19,6 @@ services:
       - key: LANGCHAIN_TRACING_V2
         value: "true"
       - key: LANGCHAIN_PROJECT
-        value: deriv-research-agent
+        value: masst-spy
       - key: FRONTEND_URL
         sync: false

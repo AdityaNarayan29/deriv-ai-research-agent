@@ -637,7 +637,7 @@ When `agent/graph.py` loads, it automatically sets the LangSmith environment var
 ```python
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_API_KEY"] = settings.langchain_api_key
-os.environ["LANGCHAIN_PROJECT"] = "deriv-research-agent"
+os.environ["LANGCHAIN_PROJECT"] = "masst-spy"
 ```
 
 ### What Gets Traced

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     # --- LangSmith ---
     langchain_tracing_v2: bool = Field(default=True, alias="LANGCHAIN_TRACING_V2")
     langchain_api_key: str = Field(default="", alias="LANGCHAIN_API_KEY")
-    langchain_project: str = Field(default="deriv-research-agent", alias="LANGCHAIN_PROJECT")
+    langchain_project: str = Field(default="masst-spy", alias="LANGCHAIN_PROJECT")
 
     # --- Model Configuration ---
     groq_model: str = "llama-3.3-70b-versatile"

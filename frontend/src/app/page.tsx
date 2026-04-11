@@ -209,12 +209,11 @@ export default function Home() {
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
-              AI-Powered
-              <br />
-              <span className="text-orange-500">Due Diligence</span>
-              <br />
-              Research Agent
+              <span className="text-orange-500">masst</span> spy
             </h1>
+            <p className="mt-2 text-sm font-medium tracking-wide text-neutral-500 uppercase sm:text-base">
+              AI-Powered Due Diligence Research Agent
+            </p>
 
             <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-neutral-400 sm:mt-6 sm:text-lg lg:mx-0">
               Enter a name, and our autonomous agent investigates across the web
@@ -439,7 +438,7 @@ export default function Home() {
       <footer className="border-t border-white/5 py-6 sm:py-8">
         <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
           <p className="text-[10px] text-neutral-600 sm:text-xs">
-            Built by Aditya Narayan &middot; Deriv Senior Engineer Assessment
+            <span className="text-orange-500/60 font-semibold">masst spy</span> &middot; Built by Aditya Narayan
           </p>
         </div>
       </footer>
