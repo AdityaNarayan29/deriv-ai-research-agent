@@ -211,6 +211,8 @@ ALL IDENTIFIED ENTITIES:
 RISK FLAGS:
 {risk_flags}
 
+{network_analysis}
+
 INVESTIGATION METADATA:
 - Total search iterations: {iterations}
 - Total facts extracted: {total_facts}
@@ -227,6 +229,19 @@ Verified biographical and professional details of the target.
 
 ## Organizational Connections
 Map of connected entities, their relationships, and significance.
+
+## Network Analysis
+Interpret the provided network analytics in plain language. Cover:
+- Which entities are most structurally important to the network, \
+and what that suggests about the target's relationships
+- Whether the graph reveals distinct clusters/communities, and what \
+those clusters might represent (e.g., professional network vs. \
+family vs. legal counterparties)
+- Whether any entities serve as bridges connecting otherwise \
+separate parts of the network — these are often the most \
+interesting leads
+- If the graph is too small for meaningful analysis, say so \
+explicitly rather than padding.
 
 ## Risk Assessment
 Detailed analysis of each risk flag, ranked by severity.
