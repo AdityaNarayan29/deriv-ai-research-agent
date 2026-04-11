@@ -97,8 +97,39 @@ def risk_analyzer(state: AgentState) -> dict:
                     recommendation=r.get("recommendation", ""),
                 ))
 
+            # --- Apply confidence adjustments to facts ---
             adjustments = data.get("confidence_adjustments", [])
-            adj_log = f", {len(adjustments)} confidence adjustments" if adjustments else ""
+            updated_facts = []
+            skipped = 0
+            deltas: list[float] = []
+
+            if adjustments:
+                facts_by_id = {f.id: f for f in facts}
+                for adj in adjustments:
+                    fact_id = adj.get("fact_id", "")
+                    original = facts_by_id.get(fact_id)
+                    if not original:
+                        logger.warning(f"RiskAnalyzer: confidence adjustment for unknown fact '{fact_id}' — skipping")
+                        skipped += 1
+                        continue
+                    new_conf = min(max(float(adj.get("new_confidence", original.confidence)), 0.0), 1.0)
+                    delta = new_conf - original.confidence
+                    deltas.append(abs(delta))
+                    reason = adj.get("reason", "no reason given")
+                    updated = original.model_copy(update={"confidence": new_conf})
+                    updated_facts.append(updated)
+                    logger.info(
+                        f"RiskAnalyzer: {fact_id} confidence {original.confidence:.2f} → {new_conf:.2f} ({reason})"
+                    )
+
+            applied = len(updated_facts)
+            mean_delta = sum(deltas) / len(deltas) if deltas else 0.0
+            adj_log = ""
+            if adjustments:
+                adj_log = (
+                    f", {applied} confidence adjustments applied"
+                    f" ({skipped} skipped, mean delta {mean_delta:.2f})"
+                )
 
             log_msg = (
                 f"[{datetime.now().isoformat()}] RiskAnalyzer ({model_used}): "
@@ -106,10 +137,13 @@ def risk_analyzer(state: AgentState) -> dict:
             )
             logger.info(log_msg)
 
-            return {
+            result: dict = {
                 "risk_flags": new_risks,
                 "execution_log": [log_msg],
             }
+            if updated_facts:
+                result["facts"] = updated_facts
+            return result
 
         except Exception as e:
             logger.warning(f"Risk analysis failed with {model_name}: {e}")

@@ -8,7 +8,6 @@ from enum import Enum
 from typing import Annotated
 
 from pydantic import BaseModel, Field
-from langgraph.graph.message import add_messages
 
 
 # ---------------------------------------------------------------------------
@@ -107,28 +106,48 @@ class RiskFlag(BaseModel):
 from typing import TypedDict
 
 
+def _get_id(item) -> str | None:
+    """Extract the 'id' field from a Pydantic model or dict, if present."""
+    return getattr(item, "id", None) or (item.get("id") if isinstance(item, dict) else None)
+
+
 def _merge_lists(existing: list, new: list) -> list:
-    """Merge two lists, deduplicating by 'id' field if present."""
+    """Merge two lists, deduplicating by 'id' field if present.
+
+    On ID collision, the NEW item replaces the existing one
+    (last-write-wins). This allows nodes to emit updates to
+    previously-seen objects — risk_analyzer uses it to apply confidence
+    adjustments to facts, search_executor uses it to toggle
+    entity.investigated.
+
+    Items without an 'id' field accumulate unconditionally (no dedup).
+    Dict preserves insertion order, so existing items keep their
+    relative position even when replaced.
+    """
     if not new:
         return existing
     if not existing:
         return new
 
-    # If items have an 'id' attribute, deduplicate
-    existing_ids = set()
+    # Index existing items by ID (preserves insertion order)
+    by_id: dict[str, object] = {}
+    no_id: list = []
     for item in existing:
-        if hasattr(item, "id"):
-            existing_ids.add(item.id)
-        elif isinstance(item, dict) and "id" in item:
-            existing_ids.add(item["id"])
+        item_id = _get_id(item)
+        if item_id:
+            by_id[item_id] = item
+        else:
+            no_id.append(item)
 
-    merged = list(existing)
+    # Merge new items — last-write-wins on ID collision
     for item in new:
-        item_id = getattr(item, "id", None) or (item.get("id") if isinstance(item, dict) else None)
-        if item_id and item_id in existing_ids:
-            continue
-        merged.append(item)
-    return merged
+        item_id = _get_id(item)
+        if item_id:
+            by_id[item_id] = item  # replaces existing or adds new
+        else:
+            no_id.append(item)
+
+    return list(by_id.values()) + no_id
 
 
 def _merge_strings(existing: list[str], new: list[str]) -> list[str]:
