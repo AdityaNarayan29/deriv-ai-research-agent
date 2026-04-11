@@ -122,7 +122,7 @@ async def investigate(req: InvestigateRequest):
 
     async def event_stream():
         queue: asyncio.Queue = asyncio.Queue()
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def run_agent():
             """Run the LangGraph agent in a background thread."""
