@@ -114,6 +114,7 @@ def create_initial_state(target_name: str, target_context: str = "", max_iterati
         "max_iterations": max_iterations,
         "should_continue": False,
         "graph_html": "",
+        "graph_analytics": {},
         "report": "",
         "execution_log": [],
     }

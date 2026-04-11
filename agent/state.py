@@ -150,6 +150,17 @@ def _merge_lists(existing: list, new: list) -> list:
     return list(by_id.values()) + no_id
 
 
+def _overwrite(existing, new):
+    """Replace existing value with new on update.
+
+    Used for single-value state fields (not lists) that should be
+    overwritten entirely when a node emits a new value — e.g.,
+    graph_analytics is computed once by graph_builder and replaces
+    the initial empty dict.
+    """
+    return new if new is not None else existing
+
+
 def _merge_strings(existing: list[str], new: list[str]) -> list[str]:
     """Merge string lists, deduplicating."""
     seen = set(existing)
@@ -185,5 +196,6 @@ class AgentState(TypedDict):
 
     # Outputs
     graph_html: str
+    graph_analytics: Annotated[dict, _overwrite]
     report: str
     execution_log: Annotated[list[str], _merge_strings]
